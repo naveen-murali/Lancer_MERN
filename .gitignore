@@ -1,3 +1,6 @@
+# build forlder for the project
+build/
+
 # Logs
 logs
 *.log
