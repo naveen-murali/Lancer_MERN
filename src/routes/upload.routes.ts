@@ -13,18 +13,18 @@ export class UploadRoutes implements Routes {
     constructor() { this.initializeRoutes(); }
 
     initializeRoutes(): void {
-        const auth = this.path;
+        const uploads = this.path;
         const {
             imageUpload,
             fileUpload
         } = this.uploadController;
 
         this.router
-            .route(`${auth}/image`)
+            .route(`${uploads}/image`)
             .post(protect, uploadImage.single('image'), imageUpload);
         
         this.router
-            .route(`${auth}/file`)
+            .route(`${uploads}/file`)
             .post(protect, uploadFile.single('file'), fileUpload);
     }
 

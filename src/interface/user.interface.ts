@@ -1,9 +1,6 @@
 import { Role } from "../util";
+import { Image } from "./common.interface";
 
-interface Image {
-    public_id: string;
-    url: string;
-}
 
 export interface UserModel {
     _id?: string;

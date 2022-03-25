@@ -5,3 +5,5 @@ export * from './admin.interface';
 export * from './lancer.interface';
 export * from './referrals.interface';
 export * from './jwt.interface';
+export * from './category.interface';
+export * from './subCategory.interface';

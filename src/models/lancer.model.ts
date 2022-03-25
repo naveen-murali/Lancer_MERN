@@ -1,5 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 import { LancerModel } from '../interface';
+import { Coll } from '../util';
 
 const lancerSchema: Schema = new Schema(
     {
@@ -24,4 +25,4 @@ const lancerSchema: Schema = new Schema(
     }
 );
 
-export const Lancer = model<LancerModel & Document>('Lancer', lancerSchema);
+export const Lancer = model<LancerModel & Document>('Lancer', lancerSchema, Coll.LANCER);

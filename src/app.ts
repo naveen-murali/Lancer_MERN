@@ -1,6 +1,7 @@
 import express, { Application, json, urlencoded } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import compression from 'compression';
 import { Routes } from './interface';
 import { Mode } from './util';
 import { errorMiddleware } from './middleware/error.middleware';
@@ -34,6 +35,10 @@ export class App {
             extended: true,
             limit: process.env.BODY_LIMIT
         }));
+        this.app.use(compression({
+            level: 6,
+            threshold: 1024 * 10
+        }))
     }
 
     private makeDevDependancy(middleware: any) {

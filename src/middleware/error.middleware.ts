@@ -18,7 +18,7 @@ export const errorMiddleware = (err: HttpException | MongoError, req: Request, r
         res.status(409)
             .json({
                 messsage: "Credentials are already in use",
-                error: "Credentials are already in use"
+                error: ["Credentials are already in use"]
             });
 
     else if (err instanceof HttpException) {
@@ -30,6 +30,6 @@ export const errorMiddleware = (err: HttpException | MongoError, req: Request, r
     }
 
     else {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: err.message, error: [err.message] });
     }
 };

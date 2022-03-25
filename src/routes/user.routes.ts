@@ -13,12 +13,17 @@ export class UserRoutes implements Routes {
 
     initializeRoutes(): void {
         const users = this.path;
-        const { getAllUsers } = this.userController;
+        const { getAllUsers, getUserById } = this.userController;
 
         this.router
             .route(`${users}`)
             .all(protect)
             .get(checkRoles([Role.ADMIN]), getAllUsers);
+
+        this.router
+            .route(`${users}/:id`)
+            .all(protect)
+            .get(getUserById);
     }
 
 }

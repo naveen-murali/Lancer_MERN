@@ -1,5 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 import { ReferralsModel } from '../interface';
+import { Coll } from '../util';
 
 
 const referralsSchema: Schema = new Schema(
@@ -14,7 +15,10 @@ const referralsSchema: Schema = new Schema(
             required: true
         }
     },
-    { timestamps: true }
+    {
+        _id: false,
+        timestamps: true
+    }
 );
 
 const referralSchema: Schema = new Schema(
@@ -31,4 +35,4 @@ const referralSchema: Schema = new Schema(
     }
 );
 
-export const Referrals = model<ReferralsModel & Document>('Referrals', referralSchema);
+export const Referrals = model<ReferralsModel & Document>('Referrals', referralSchema, Coll.REFERRAL);

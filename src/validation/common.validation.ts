@@ -57,7 +57,39 @@ export const Id = z
     });
 
 export const Image = z
+    .object({
+        public_id: z
+            .string({
+                invalid_type_error: 'public id should be a string',
+                required_error: "public id is required"
+            })
+            .optional(),
+        url: z
+            .string({
+                invalid_type_error: 'url id should be a string',
+                required_error: "url id is required"
+            })
+    });
+
+
+export const Title = z
     .string({
-        invalid_type_error: 'image should be a string',
-        required_error: "image is required"
-    });;
+        invalid_type_error: 'title should be a string',
+        required_error: "title is required"
+    });
+
+
+export const Description = z
+    .string({
+        invalid_type_error: 'description should be a string',
+        required_error: "description is required"
+    });
+
+export const Category = z
+    .string({
+        invalid_type_error: 'category should be a string',
+        required_error: "category is required"
+    })
+    .length(24, {
+        message: "category id should have length of 24"
+    });

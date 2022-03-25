@@ -1,3 +1,4 @@
+import { NotFoundException } from '../exceptions';
 import { User } from '../models';
 
 interface SearchInter {
@@ -49,8 +50,13 @@ export class UserService {
         };
     };
 
-    updateUser = (id: string) => {
-        
-    }
+    getUserById = async (id: string) => {
+        const user = await this.User.findById(id).exec();
+
+        if (!user)
+            throw new NotFoundException('user not found');
+        else
+            return user;
+    };
 
 }

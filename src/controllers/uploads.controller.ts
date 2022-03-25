@@ -12,6 +12,8 @@ export class UploadController {
     // @desc       Uploading single image
     // @rout       POST /uploads/image
     imageUpload = asyncHandler(async (req: Request, res: Response) => {
+        console.log('here');
+        
         if (req.file)
             cloudinary.v2.uploader.upload_stream(
                 {
@@ -19,6 +21,8 @@ export class UploadController {
                     folder: 'Lancer'
                 },
                 (error, result: any) => {
+                    console.log("here");
+                    
                     if (error)
                         throw new HttpException(400, "Failed to upload the image");
                     else

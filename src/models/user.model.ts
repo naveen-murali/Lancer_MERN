@@ -1,18 +1,9 @@
 import { Schema, model, Document, CallbackWithoutResultAndOptionalError } from 'mongoose';
 import { hash, genSalt, compare } from 'bcrypt';
-import { Role } from '../util';
+import { Coll, Role } from '../util';
 import { UserModel } from '../interface';
+import { Image } from './common.schema';
 
-const Image = new Schema({
-    public_id: {
-        type: String,
-        required: false,
-    },
-    url: {
-        type: String,
-        required: false,
-    }
-});
 
 const userSchema: Schema = new Schema(
     {
@@ -92,4 +83,4 @@ userSchema.pre('save', async function (next: CallbackWithoutResultAndOptionalErr
     this.password = await hash(this.password, salt);
 });
 
-export const User = model<UserModel & Document>('User', userSchema);
+export const User = model<UserModel & Document>('User', userSchema, Coll.USER);

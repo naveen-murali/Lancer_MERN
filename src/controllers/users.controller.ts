@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
+import { BadRequestException, HttpException } from '../exceptions';
+import { AdminModel, CustomRequest, UserModel } from '../interface';
 import { UserService } from '../services';
+import { Role } from '../util';
 
 interface SearchInter {
     search: string;
@@ -23,5 +26,28 @@ export class UserController {
         const users = await this.userService.getAllUsers(query);
 
         res.json(users);
+    });
+
+
+    // @desc        Get all the users
+    // @rout        POST /users
+    // @acce        User/Admin
+    getUserById = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+
+        const body = req.headers['user'] as UserModel | AdminModel;
+
+        if (!id)
+            throw new BadRequestException("id is missing");
+
+        if (
+            body && body._id && !body.role.includes(Role.ADMIN) && id !== body._id.toString()
+        ) {
+            throw new HttpException(401, "You can't access this information");
+        }
+
+        const user = await this.userService.getUserById(id);
+
+        res.json(user);
     });
 }
