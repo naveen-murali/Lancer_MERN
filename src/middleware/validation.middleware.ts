@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler';
-import { NotFoundException } from '../exceptions';
+import { BadRequestException, NotFoundException } from '../exceptions';
 
 interface IssuesInter {
     message: string;
@@ -21,7 +21,7 @@ export const ValidateBody = (validationMethod: Function) =>
         if (!data.success) {
             console.log('--------------IN validate body middleware [not success]--------------');
             const errors: string[] = data?.error?.issues?.map(msg => msg.message);
-            throw new NotFoundException("Invalide Credentials", errors);
+            throw new BadRequestException("Invalide Credentials", errors);
         }
 
         next();

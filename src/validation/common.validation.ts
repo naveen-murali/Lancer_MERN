@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { EmailPattern, RefEnum } from '../util';
+import { EmailPattern, RefEnum, SkillLevel } from '../util';
 
 export const Name = z
     .string({
@@ -71,13 +71,11 @@ export const Image = z
             })
     });
 
-
 export const Title = z
     .string({
         invalid_type_error: 'title should be a string',
         required_error: "title is required"
     });
-
 
 export const Description = z
     .string({
@@ -93,3 +91,31 @@ export const Category = z
     .length(24, {
         message: "category id should have length of 24"
     });
+
+export const PersonalWebsite = z
+    .string({
+        invalid_type_error: 'personalWebsite should be a string',
+        required_error: "personalWebsite is required"
+    }).optional();
+
+export const Certification = z.object({
+    title: Title,
+    certifiedBy: z
+        .string({
+            invalid_type_error: 'certifiedBy should be a string',
+            required_error: "certifiedBy is required"
+        }),
+    year: z.string({
+        invalid_type_error: 'year should be a string',
+        required_error: "year is required"
+    }),
+});
+
+export const Skill = z.object({
+    title: Title,
+    level: z
+        .nativeEnum(SkillLevel, {
+            invalid_type_error: `level can only have a value of ${SkillLevel.BIGGINER}, ${SkillLevel.INERMEDIATE} or ${SkillLevel.EXPERT}`,
+            required_error: "level should be a string"
+        })
+});

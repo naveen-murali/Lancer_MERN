@@ -1,5 +1,9 @@
-import { NotFoundException } from '../exceptions';
+import { Types } from 'mongoose';
+import { HttpException, NotFoundException } from '../exceptions';
 import { User } from '../models';
+import { SellerInfo } from '../models/sellerInfor.model';
+import { Coll, Role } from '../util';
+import { AddSellerInfoBody } from '../validation';
 
 interface SearchInter {
     search: string;
@@ -50,8 +54,51 @@ export class UserService {
         };
     };
 
+
+    addSellerInfo = async (userId: string, sellerData: AddSellerInfoBody) => {
+        const userExists = await User.findById(userId).select('-password -isBlocked');
+
+        if (!userExists)
+            throw new NotFoundException('user not found');
+
+        if (!userExists.isEmailVarified || !userExists.isPhoneVerified)
+            throw new HttpException(401, "credential varification is not completed");
+
+        const newSellerInfo = await SellerInfo.create({
+            ...sellerData,
+            user: userId
+        });
+        userExists.role.push(Role.SELLER);
+        await userExists.save();
+
+        delete userExists.isBlocked;
+
+        return {
+            user: userExists,
+            sellerInfo: newSellerInfo
+        };
+    };
+
+
     getUserById = async (id: string) => {
-        const user = await this.User.findById(id).exec();
+        const user = await this.User.aggregate([
+            {
+                $match: {
+                    _id: new Types.ObjectId(id)
+                }
+            },
+            {
+                $lookup: {
+                    from: Coll.SELLER_INFO,
+                    localField: '_id',
+                    foreignField: 'user',
+                    as: 'sellerInfo'
+                }
+            },
+            {
+                $unset: ["isBlocked", "password"]
+            }
+        ]).exec();
 
         if (!user)
             throw new NotFoundException('user not found');

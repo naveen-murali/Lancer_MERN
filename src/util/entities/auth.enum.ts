@@ -1,7 +1,7 @@
 export enum Role {
     ADMIN = 'admin',
-    BUYER = 'seller',
-    SELLER = 'buyer'
+    BUYER = 'buyer',
+    SELLER = 'seller'
 }
 
 export enum RefEnum{

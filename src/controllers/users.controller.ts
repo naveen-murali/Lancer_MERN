@@ -4,6 +4,7 @@ import { BadRequestException, HttpException } from '../exceptions';
 import { AdminModel, CustomRequest, UserModel } from '../interface';
 import { UserService } from '../services';
 import { Role } from '../util';
+import { AddSellerInfoBody } from '../validation';
 
 interface SearchInter {
     search: string;
@@ -30,6 +31,21 @@ export class UserController {
 
 
     // @desc        Get all the users
+    // @rout        POST /users/sellers
+    // @acce        User[Buyer]
+    addSellerInfo = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const user = <UserModel>req.headers['user'];
+        if (user && user._id && user.role.includes(Role.SELLER))
+            throw new HttpException(401, `user is already is a ${Role.SELLER}`);
+
+        const sellerData = <AddSellerInfoBody>req.body;
+        const users = await this.userService.addSellerInfo((user._id as string), sellerData);
+
+        res.status(201).json(users);
+    });
+
+
+    // @desc        Get all the users
     // @rout        POST /users
     // @acce        User/Admin
     getUserById = asyncHandler(async (req: CustomRequest, res: Response) => {
@@ -41,7 +57,9 @@ export class UserController {
             throw new BadRequestException("id is missing");
 
         if (
-            body && body._id && !body.role.includes(Role.ADMIN) && id !== body._id.toString()
+            body && body._id &&
+            !body.role.includes(Role.ADMIN) &&
+            id !== body._id.toString()
         ) {
             throw new HttpException(401, "You can't access this information");
         }

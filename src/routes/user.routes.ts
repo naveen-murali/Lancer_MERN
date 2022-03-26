@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { UserController } from '../controllers';
 import { Routes } from "../interface";
-import { protect, checkRoles } from '../middleware';
+import { protect, checkRoles, ValidateBody } from '../middleware';
 import { Role } from '../util';
+import { AddSellerInfoBodyVal } from '../validation';
 
 export class UserRoutes implements Routes {
     public path: string = "/users";
@@ -13,17 +14,23 @@ export class UserRoutes implements Routes {
 
     initializeRoutes(): void {
         const users = this.path;
-        const { getAllUsers, getUserById } = this.userController;
+        const {
+            getAllUsers,
+            getUserById,
+            addSellerInfo
+        } = this.userController;
 
         this.router
             .route(`${users}`)
-            .all(protect)
-            .get(checkRoles([Role.ADMIN]), getAllUsers);
+            .get(protect, checkRoles([Role.ADMIN]), getAllUsers);
+
+        this.router
+            .route(`${users}/sellers`)
+            .post(protect, checkRoles([Role.BUYER]), ValidateBody(AddSellerInfoBodyVal.safeParse), addSellerInfo);
 
         this.router
             .route(`${users}/:id`)
-            .all(protect)
-            .get(getUserById);
+            .get(protect, getUserById);
     }
 
 }
