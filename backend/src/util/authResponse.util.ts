@@ -1,4 +1,4 @@
-import { Role } from "./";
+import { Role } from ".";
 import { UserModel } from '../interface';
 
 export class AuthResponse {

@@ -1,0 +1,663 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --body--background: #f1f5f8;
+    --footer--background: #1A2038;
+    --color: #EC0023;
+    --black: #1A2038;
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+    --shadow-2: 0 -1px 3px 0 rgb(0 0 0 / 10%), 0 -1px 2px 0 rgb(0 0 0 / 6%) !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: white;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    transition: color 0.3s linear !important;
+    border-radius: 1rem !important;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* width */
+.table-responsive::-webkit-scrollbar {
+    height: 5px;
+}
+
+/* Track */
+.table-responsive::-webkit-scrollbar-track {
+    background: white !important;
+}
+
+/* Handle */
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    transition: color 0.3s linear !important;
+    border-radius: 1rem !important;
+}
+
+/* Handle on hover */
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+body {
+    background-color: var(--body--background);
+}
+
+header {
+    z-index: 10000;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+header>nav {
+    min-height: 4rem;
+}
+
+main {
+    margin-top: 4rem !important;
+    min-height: calc(100vh - 7rem);
+    background-color: var(--body--background);
+}
+
+footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem !important;
+    background-color: var(--footer--background);
+}
+
+footer>.container {
+    height: 3rem;
+    border-radius: 0.3rem 0.3rem 0 0;
+    box-shadow: var(--shadow-2);
+}
+
+.shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.letter-spacing-0 {
+    letter-spacing: 0px;
+}
+
+.letter-spacing-1 {
+    letter-spacing: 1px;
+}
+
+/* h1, h2, h3, h4, h5, h6 {
+    text-transform: uppercase;
+} */
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+a {
+    text-decoration: none;
+}
+
+button {
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none !important;
+}
+
+input:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none;
+}
+
+/* ----------brand icon---------- */
+.brand-text {
+    text-align: unset !important;
+    text-transform: none !important;
+    font-weight: 500 !important;
+    font-size: 30px;
+    font-family: 'Permanent Marker', cursive;
+    letter-spacing: -1px;
+    line-height: initial;
+    padding: 0 !important;
+}
+
+.brand-text>span {
+    color: var(--color);
+    font-size: 36px;
+}
+
+/* ------------------------------ */
+
+/* --------burgger button-------- */
+.us-navToggler {
+    color: rgba(17, 17, 17, 0.699) !important;
+}
+
+/* product */
+.product-price {
+    letter-spacing: 0;
+    font-size: 22px;
+    font-weight: 600 !important;
+}
+
+
+/* button types in the uintyshop */
+.us-btn, .us-btn-outline:hover,
+.us-btn:hover, .us-btn-outline {
+    width: 100%;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    border: 2px solid var(--black) !important;
+    border-radius: 0.2rem;
+    padding: 0.4rem 1rem;
+    letter-spacing: 0;
+    transition: all 0.2s linear;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+
+.us-btn, .us-btn-outline:hover {
+    background-color: var(--black) !important;
+    font-weight: 500;
+}
+
+.us-btn:hover, .us-btn-outline {
+    color: var(--black) !important;
+    font-weight: 500;
+    background: none !important;
+}
+
+/* .us-btn-outline:focus {
+    color: var(--black);
+} */
+
+.us-btn-danger {
+    width: 100%;
+    font-size: 14px;
+    border: 2px solid #d9534f;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 0.2rem;
+    transition: all 0.2s ease;
+    padding: 0.4rem 1rem;
+    letter-spacing: 0;
+}
+
+.us-btn-danger:hover {
+    background: none;
+    border: 2px solid #d9534f;
+    color: #d9534f;
+}
+
+.us-btn-danger:active {
+    background: none;
+    border: 2px solid #d9534f;
+    color: #d9534f;
+}
+
+.us-btn-danger-outline {
+    width: 100%;
+    font-size: 14px;
+    border: 2px solid #d9534f;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 0.2rem;
+    padding: 0.4rem 1rem;
+    letter-spacing: 0;
+    transition: all 0.2s ease;
+    background-color: transparent;
+    color: #d9534f;
+}
+
+.us-btn-danger-outline:hover {
+    border: 2px solid #d9534f;
+    background-color: #d9534f;
+}
+
+.us-btn-danger-outline:active {
+    background: none;
+    border: 2px solid #d9534f;
+    color: #d9534f;
+}
+
+.us-edit-btn, .us-delete-btn {
+    padding: 0.2rem 1rem !important;
+    font-size: 12px;
+}
+
+.us-edit-btn {
+    border-top-left-radius: 0.2rem;
+    border-bottom-left-radius: 0.2rem;
+    border-right: 0 !important;
+    transition: all 250ms ease-in-out;
+}
+
+
+.us-delete-btn {
+    border-top-right-radius: 0.2rem;
+    border-bottom-right-radius: 0.2rem;
+    border-left: 0 !important;
+    transition: all 250ms ease-in-out;
+    box-shadow: none;
+}
+
+.us-edit-btn:hover,
+.us-delete-btn:hover {
+    transform: scale(1.1);
+    border-right: 1px;
+    box-shadow: 0 0 5px rgb(0 0 0 / 10%) !important;
+}
+
+.us-edit-btn:focus,
+.us-delete-btn:focus {
+    box-shadow: 0 0 5px rgb(0 0 0 / 10%) !important;
+}
+
+/* .us-btn-danger:focus{
+    border: inherit;
+} */
+
+/* unityshop classes */
+.us-ml {
+    margin-left: 0.5rem;
+}
+
+.us-input {
+    padding: 0.4rem 1rem;
+}
+
+/* ------------------------------ */
+
+.us-wishList {
+    position: absolute;
+    top: -20%;
+    right: 5%;
+    font-size: 26px;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.form-select {
+    box-shadow: none;
+    cursor: pointer;
+    background-color: #F9F9F9;
+}
+
+.form-select:focus {
+    box-shadow: none;
+}
+
+.nav-drop {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.nav-drop>button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 !important;
+    /* margin: 0 0 0 0.5rem !important; */
+    background-color: transparent !important;
+    color: #1a1a1a !important;
+}
+
+.nav-drop.prfile>button {
+    text-transform: capitalize !important;
+    font-size: 16px;
+}
+
+.nav-drop>button:hover,
+.nav-drop>button:focus,
+.nav-drop>button:active,
+.nav-drop:hover,
+.nav-drop:focus,
+.nav-drop:active {
+    background-color: transparent !important;
+    color: #1a1a1a !important;
+}
+
+.nav-drop.admin {
+    margin-left: 1rem;
+}
+
+.dropdown-menu-end {
+    box-shadow: var(--shadow);
+    border-radius: 0.2rem;
+}
+
+.icon-user {
+    font-size: 120px;
+}
+
+.form-check-input {
+    cursor: pointer !important;
+}
+
+.bold {
+    font-weight: 700 !important;
+}
+
+.confirmAlert, .brandCreateDelete {
+    z-index: 10001;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    min-height: 100vh;
+    background: #1a1a1a54;
+    opacity: 0;
+    pointer-events: none;
+    transform: all 0.5s ease;
+}
+
+.confirmAlert.show, .brandCreateDelete.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.confrimAlert-card {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -40%) scale(0.2);
+    transition: all 0.35s ease-in-out;
+}
+
+.confrimAlert-card h4.card-title {
+    font-weight: 900 !important;
+    color: rgba(17, 17, 17, 0.404) !important;
+}
+
+.confrimAlert-card.hide {
+    animation: linear 0.35s popdown;
+}
+
+.confrimAlert-card.show {
+    animation: linear 0.35s popup;
+    /* color: rgb(112, 112, 112); */
+    transform: translate(-50%, -40%) scale(1);
+}
+
+.product-card {
+    /* box-shadow: 0 5px 15px rgb(0 0 0 / 10%) !important; */
+    transition: all 0.3s linear;
+}
+
+.product-col {
+    transition: all 0.3s linear;
+}
+
+.transi {
+    transition: all 0.3s linear;
+}
+
+.product-card:hover {
+    box-shadow: 0 5px 15px rgb(0 0 0 / 10%) !important;
+}
+
+.product-col:hover {
+    transform: scale(1.03);
+}
+
+.error-page {
+    min-height: calc(100vh - 7rem);
+    background: transparent;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    margin-top: -5rem;
+}
+
+.error-page h1 {
+    width: 100%;
+    font-size: 4rem;
+    color: #003e6ba2 !important;
+    letter-spacing: 0.15rem;
+    text-transform: capitalize;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.showImagePreview {
+    width: fit-content !important;
+    /* height: 300px !important; */
+}
+
+.showImagePreview img {
+    height: 350px;
+}
+
+.search {
+    height: fit-content !important;
+}
+
+.search-input {
+    height: 2.5rem !important;
+    font-size: 16px;
+    border-top-left-radius: 0.25rem !important;
+    border-bottom-left-radius: 0.25rem !important;
+}
+
+.search-btn {
+    height: 2.5rem !important;
+    text-transform: capitalize !important;
+    border-top-right-radius: 0.25rem !important;
+    border-bottom-right-radius: 0.25rem !important;
+}
+
+.brandCreateDelete {
+    width: 100vw;
+}
+
+.refferal {
+    padding: 0.5rem 3rem 0.5rem 0.5rem !important;
+    white-space: nowrap;
+    overflow-x: scroll;
+}
+
+.refferal::-webkit-scrollbar {
+    display: none;
+}
+
+.refferal-container:hover>.refferal-copy {
+    opacity: 0.8;
+}
+
+.refferal-copy {
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.recharts-default-legend {
+    padding-top: 2rem !important;
+}
+
+.googleBtn {
+    padding: 0.35rem 0.75rem;
+    letter-spacing: 1.6px;
+    color: #fff;
+    border-radius: 0.2rem;
+    border-color: rgba(0, 0, 0, 0.295) !important;
+    text-transform: uppercase;
+    box-shadow: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s linear;
+}
+
+.googleBtn:hover {
+    font-weight: 600;
+    border-color: 2px solid #EC0023;
+    background-color: white;
+    color: black;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.divider {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: uppercase;
+}
+
+.divider>span {
+    width: 45%;
+    height: 2px;
+    background-color: #6c757da1 !important;
+}
+
+.regPhone {
+    width: 100vw;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #1a1a1a54;
+}
+
+.regPhone-form {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    transition: all 0.35s ease-in-out;
+}
+
+@media print {
+    .shadow {
+        box-shadow: none !important;
+    }
+
+    .reportDownloadBtn {
+        display: none;
+    }
+
+    .onPrint {
+        display: flex;
+    }
+
+    .onPrint-date {
+        margin: 0 0.5rem;
+    }
+
+    .onPrint-display {
+        display: flex !important;
+    }
+}
+
+@media all {
+    .page-break {
+        display: none;
+    }
+}
+
+@media print {
+    .page-break {
+        margin-top: 1rem;
+        display: block;
+        page-break-before: avoid;
+    }
+}
+
+@page {
+    margin: 10mm 5mm;
+    size: landscape;
+    border: 5px solid black !important;
+    font-family: 'Times New Roman', Times, serif !important;
+}
+
+@keyframes popup {
+    0% {
+        transform: translate(-50%, -40%) scale(0.2);
+    }
+
+    50% {
+        transform: translate(-50%, -40%) scale(1.25);
+    }
+
+    100% {
+        transform: translate(-50%, -40%) scale(1);
+    }
+}
+
+@keyframes popdown {
+    0% {
+        transform: translate(-50%, -40%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -40%) scale(1.25);
+    }
+
+    100% {
+        transform: translate(-50%, -40%) scale(0.2);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .us-wishList {
+        top: 2%;
+    }
+
+    .product-col:hover {
+        transform: scale(1);
+    }
+
+    .error-page h1 {
+        font-size: 2.5rem;
+    }
+
+    .refferal-copy {
+        opacity: 0.8;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .nav-drop.admin {
+        margin-left: 0rem;
+    }
+
+    .us-wishList {
+        top: 2% !important;
+    }
+
+    .us-ml {
+        margin-left: 0;
+    }
+}

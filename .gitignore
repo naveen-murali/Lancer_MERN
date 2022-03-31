@@ -1,5 +1,9 @@
-# build forlder for the project
+# build folder for the project
 build/
+backend/build/
+
+# vs code
+*.code-workspace
 
 # Logs
 logs

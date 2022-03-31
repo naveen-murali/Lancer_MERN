@@ -89,7 +89,7 @@ export class CategoryController {
         const categoryId = req.params.id as string;
 
         const category = await this.categoryService.getCategorySubcategory(categoryId);
-        res.json(category);
+        res.json(category[0]);
     });
 
 
@@ -100,7 +100,7 @@ export class CategoryController {
         const categoryId = req.params.id as string;
 
         const category = await this.categoryService.getCategorySubcategoryForAdmin(categoryId);
-        res.json(category);
+        res.json(category[0]);
     });
 
 
