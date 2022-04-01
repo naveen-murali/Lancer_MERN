@@ -3,7 +3,7 @@ import { HttpException, NotFoundException } from '../exceptions';
 import { User } from '../models';
 import { SellerInfo } from '../models/sellerInfor.model';
 import { Coll, Role } from '../util';
-import { AddSellerInfoBody } from '../validation';
+import { AddSellerInfoBody, EditUserBody } from '../validation';
 
 interface SearchInter {
     search: string;
@@ -104,6 +104,19 @@ export class UserService {
             throw new NotFoundException('user not found');
         else
             return user;
+    };
+
+
+    editUser = async (id: string, userInfo: EditUserBody) => {
+        const user = await this.User.findById(id).exec();
+        if (!user)
+            throw new NotFoundException('user not found');
+
+        user.name = userInfo.name || user.name;
+        user.password = userInfo.password || user.password;
+
+        await user.save()
+        return true
     };
 
 }

@@ -22,6 +22,7 @@ export const SignupBodyVal = z.object({
 export type SignupBody = z.infer<typeof SignupBodyVal>;
 
 
+
 // signup google validation
 export const SignupGooogleBodyVal = z.object({
     tokenId: Id
@@ -61,3 +62,12 @@ export const SendOtpBodyVal = z.object({
     phone: Phone
 });
 export type SendOtpBody = z.infer<typeof SendOtpBodyVal>;
+
+
+
+// varifying users phone body validation
+export const PhoneVarificationBodyVal = z.object({
+    phone: Phone,
+    otp: Otp
+});
+export type PhoneVarificationBody = z.infer<typeof PhoneVarificationBodyVal>;

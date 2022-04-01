@@ -3,7 +3,7 @@ import { UserController } from '../controllers';
 import { Routes } from "../interface";
 import { protect, checkRoles, ValidateBody } from '../middleware';
 import { Role } from '../util';
-import { AddSellerInfoBodyVal } from '../validation';
+import { AddSellerInfoBodyVal, EditUserBodyVal } from '../validation';
 
 export class UserRoutes implements Routes {
     public path: string = "/users";
@@ -17,7 +17,8 @@ export class UserRoutes implements Routes {
         const {
             getAllUsers,
             getUserById,
-            addSellerInfo
+            addSellerInfo,
+            editUser
         } = this.userController;
 
         this.router
@@ -25,12 +26,19 @@ export class UserRoutes implements Routes {
             .get(protect, checkRoles([Role.ADMIN]), getAllUsers);
 
         this.router
-            .route(`${users}/sellers`)
+            .route(`${users}/:id/sellers`)
             .post(protect, checkRoles([Role.BUYER]), ValidateBody(AddSellerInfoBodyVal.safeParse), addSellerInfo);
 
         this.router
+            .route(`${users}/:id/block`);
+
+        this.router
+            .route(`${users}/:id/unblock`);
+
+        this.router
             .route(`${users}/:id`)
-            .get(protect, getUserById);
+            .get(protect, getUserById)
+            .put(protect, checkRoles([Role.BUYER, Role.SELLER]), ValidateBody(EditUserBodyVal.safeParse), editUser);
     }
 
 }

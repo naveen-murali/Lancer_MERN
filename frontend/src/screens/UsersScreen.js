@@ -116,8 +116,9 @@ const UsersScreen = () => {
                             <tr key={user._id} style={{ verticalAlign: 'center !important' }}>
                                 <td>{user._id}</td>
                                 <td className='text-center'>
+                                    {console.log(user.image) }
                                     {(user && user.image)
-                                        ? <Avatar src={user.image.url} className='m-0' />
+                                        ? <Avatar src={user.image.url} imgProps={{referrerPolicy:"no-referrer"}} className='m-0' />
                                         : <Avatar className='shadow m-0'>{user.name.substring(0, 1).toUpperCase()}</Avatar>}
                                 </td>
                                 <td>

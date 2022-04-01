@@ -2,10 +2,11 @@ import { OAuth2Client } from 'google-auth-library';
 import { nanoid } from 'nanoid';
 import { EsimProfileList } from 'twilio/lib/rest/supersim/v1/esimProfile';
 import { client } from '../config';
-import { HttpException } from '../exceptions';
+import { BadRequestException, HttpException, NotFoundException } from '../exceptions';
 import { User, Admin, Lancer, Referrals } from '../models';
 import { RefEnum } from '../util';
 import {
+    PhoneVarificationBody,
     SignupBody
 } from '../validation';
 
@@ -142,6 +143,53 @@ export class AuthService {
             throw new HttpException(401, 'Credential incorrect');
     };
 
+
+    varifyPhone = async (id: string, data: PhoneVarificationBody) => {
+        const user = await this.User.findById(id);
+
+        if (!user)
+            throw new NotFoundException('user not found');
+
+        if (!await this.varifyOtp(data.phone, data.otp))
+            throw new BadRequestException('Invalied OTP, Varification failed');
+
+        user.isPhoneVerified = true;
+        await user.save();
+
+        return true;
+    };
+
+
+    linkGoogle = async (id: string, tokenId: string) => {
+        const user = await this.User.findById(id);
+
+        if (!user)
+            throw new NotFoundException('user not found');
+
+        const data = await this.authClient.verifyIdToken({
+            idToken: tokenId,
+            audience: `${process.env.GOOGLE_CLIENT_ID}`
+        })
+            .catch((err) => {
+                throw new HttpException(401, 'google account authentication failed');
+            });
+
+        console.log(data, data.getPayload()?.picture);
+        
+        const email = data.getPayload()?.email;
+        const image = data.getPayload()?.picture;
+        const googleId = data.getUserId();
+
+        user.email = (email as string) || user.email;
+        user.image = {
+            url: (image as string)
+        };
+        user.googleId = (googleId as string);
+        user.isEmailVarified = true;
+        await user.save();
+
+        return user.email;
+    };
 
 
     sendOtp = async (phone: string): Promise<boolean> | never => {

@@ -1,10 +1,16 @@
 import { z } from 'zod';
-import { Certification, Description, PersonalWebsite, Skill } from './common.validation';
+import { Certification, Description, Email, Name, Password, PersonalWebsite, Skill } from './common.validation';
 
-export const UsersValidation = z.number({ invalid_type_error: "is not a number" });
 
-export type UsersInterface = z.infer<typeof UsersValidation>;
+// edit user profile
+export const EditUserBodyVal = z.object({
+    name: Name.optional(),
+    password: Password.optional(),
+});
+export type EditUserBody = z.infer<typeof EditUserBodyVal>;
 
+
+// becomming a seller body
 export const AddSellerInfoBodyVal = z.object({
     description: Description,
     personalWebsite: PersonalWebsite,

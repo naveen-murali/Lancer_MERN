@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Routes } from "../interface";
-import { ValidateBody } from '../middleware';
+import { checkRoles, protect, ValidateBody } from '../middleware';
 
 import { AuthController } from '../controllers';
 import {
@@ -9,8 +9,10 @@ import {
     SigninBodyVal,
     SigninGoogleBodyVal,
     SignupGooogleBodyVal,
-    SigninAdminBodyVal
+    SigninAdminBodyVal,
+    PhoneVarificationBodyVal
 } from '../validation';
+import { Role } from '../util';
 
 export class AuthRoutes implements Routes {
     public path: string = "/auth";
@@ -27,7 +29,9 @@ export class AuthRoutes implements Routes {
             signinUser,
             signinUsingGoogle,
             createUsingGoogle,
-            signinAdmin
+            signinAdmin,
+            varifyPhone,
+            linkGoogle
         } = this.authController;
 
 
@@ -46,7 +50,7 @@ export class AuthRoutes implements Routes {
         this.router
             .route(`${auth}/users/signin/google`)
             .post(ValidateBody(SigninGoogleBodyVal.safeParse), signinUsingGoogle);
-        
+
         this.router
             .route(`${auth}/admin/signin`)
             .post(ValidateBody(SigninAdminBodyVal.safeParse), signinAdmin);
@@ -54,6 +58,14 @@ export class AuthRoutes implements Routes {
         this.router
             .route(`${auth}/otp`)
             .post(ValidateBody(SendOtpBodyVal.safeParse), sendOtp);
+
+        this.router
+            .route(`${auth}/users/:id/phone`)
+            .patch(protect, checkRoles([Role.BUYER]), ValidateBody(PhoneVarificationBodyVal.safeParse), varifyPhone);
+
+        this.router
+            .route(`${auth}/users/:id/google`)
+            .patch(protect, checkRoles([Role.BUYER]), ValidateBody(SignupGooogleBodyVal.safeParse), linkGoogle);
     }
 
 }

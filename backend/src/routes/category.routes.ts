@@ -52,28 +52,23 @@ export class CategoryRoutes implements Routes {
 
         this.router
             .route(`${category}/block/:id`)
-            .all(protect, checkRoles([Role.ADMIN]))
-            .patch(blockCategory);
+            .patch(protect, checkRoles([Role.ADMIN]), blockCategory);
 
         this.router
             .route(`${category}/unblock/:id`)
-            .all(protect, checkRoles([Role.ADMIN]))
-            .patch(unblockCategory);
+            .patch(protect, checkRoles([Role.ADMIN]), unblockCategory);
 
         this.router
             .route(`${category}/subcategory/block/:id`)
-            .all(protect, checkRoles([Role.ADMIN]))
-            .patch(blockSubCategory);
+            .patch(protect, checkRoles([Role.ADMIN]), blockSubCategory);
 
         this.router
             .route(`${category}/subcategory/unblock/:id`)
-            .all(protect, checkRoles([Role.ADMIN]))
-            .patch(unblockSubCategory);
+            .patch(protect, checkRoles([Role.ADMIN]), unblockSubCategory);
 
         this.router
             .route(`${category}/admin/:id`)
-            .all(protect, checkRoles([Role.ADMIN]))
-            .get(getCategorySubcategoryForAdmin);
+            .get(protect, checkRoles([Role.ADMIN]), getCategorySubcategoryForAdmin);
 
         this.router
             .route(`${category}/:id`)

@@ -4,7 +4,7 @@ import { BadRequestException, HttpException } from '../exceptions';
 import { AdminModel, CustomRequest, UserModel } from '../interface';
 import { UserService } from '../services';
 import { Role } from '../util';
-import { AddSellerInfoBody } from '../validation';
+import { AddSellerInfoBody, EditUserBody } from '../validation';
 
 interface SearchInter {
     search: string;
@@ -45,8 +45,8 @@ export class UserController {
     });
 
 
-    // @desc        Get all the users
-    // @rout        POST /users
+    // @desc        Get user by id
+    // @rout        GET /users
     // @acce        User/Admin
     getUserById = asyncHandler(async (req: CustomRequest, res: Response) => {
         const id = req.params.id as unknown as string;
@@ -65,7 +65,26 @@ export class UserController {
         }
 
         const user = await this.userService.getUserById(id);
-
         res.json(user);
     });
+
+
+    // @desc        Editing user
+    // @rout        PUT /users/:id
+    // @acce        User/Admin
+    editUser = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+        const body: EditUserBody = req.body;
+        const user = req.headers['user'] as UserModel | AdminModel;
+
+        if (!id)
+            throw new BadRequestException("id is missing");
+
+        if (user && user._id && id !== user._id.toString())
+            throw new HttpException(401, "You can't access this information");
+
+        await this.userService.editUser(id, body);
+        res.status(204).json({});
+    });
+
 }

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
+import { HttpException } from '../exceptions';
+import { CustomRequest, UserModel } from '../interface';
 
 import { AuthService } from '../services';
 import { AuthResponse, Role } from '../util';
@@ -9,7 +11,8 @@ import {
     SendOtpBody,
     SigninBody,
     SigninGoogleBody,
-    SignupGooogleBody
+    SignupGooogleBody,
+    PhoneVarificationBody
 } from '../validation';
 
 export class AuthController {
@@ -83,6 +86,38 @@ export class AuthController {
             role: admin.role,
             token: this.generateToken(admin._id, admin.role)
         });
+    });
+
+
+    // @desc       Varify the users phone number
+    // @rout       PATCH /auth/users/:id/phone
+    varifyPhone = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+        const user = <UserModel>req.headers['user'];
+
+        if (user && user._id && user._id.toString() !== id)
+            throw new HttpException(401, "Invalied credential");
+
+        const body: PhoneVarificationBody = req.body;
+        await this.authService.varifyPhone(id, body);
+
+        res.status(201).json({ phone: body.phone, status: "varified" });
+    });
+
+
+    // @desc       Link google account
+    // @rout       PATCH /auth/users/:id/google
+    linkGoogle = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+        const user = <UserModel>req.headers['user'];
+        const body = <SignupGooogleBody>req.body;
+
+        if (user && user._id && user._id.toString() !== id)
+            throw new HttpException(401, "Invalied credential");
+
+        const email = await this.authService.linkGoogle(id, body.tokenId);
+
+        res.status(201).json({ email, status: "varified" });
     });
 
 
