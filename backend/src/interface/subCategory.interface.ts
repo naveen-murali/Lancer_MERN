@@ -1,5 +1,5 @@
 export interface SubCategoryModel {
-    categoty: string;
+    category: string;
     title: string;
     description?: string;
     isBlocked?: boolean;

@@ -3,7 +3,7 @@ import { UserController } from '../controllers';
 import { Routes } from "../interface";
 import { protect, checkRoles, ValidateBody } from '../middleware';
 import { Role } from '../util';
-import { AddSellerInfoBodyVal, EditUserBodyVal } from '../validation';
+import { AddSellerInfoBodyVal, EditSellerInfoBodyVal, EditUserBodyVal } from '../validation';
 
 export class UserRoutes implements Routes {
     public path: string = "/users";
@@ -18,7 +18,10 @@ export class UserRoutes implements Routes {
             getAllUsers,
             getUserById,
             addSellerInfo,
-            editUser
+            editUser,
+            blockUser,
+            unblockUser,
+            editSellerInfo
         } = this.userController;
 
         this.router
@@ -27,13 +30,16 @@ export class UserRoutes implements Routes {
 
         this.router
             .route(`${users}/:id/sellers`)
-            .post(protect, checkRoles([Role.BUYER]), ValidateBody(AddSellerInfoBodyVal.safeParse), addSellerInfo);
+            .post(protect, checkRoles([Role.BUYER]), ValidateBody(AddSellerInfoBodyVal.safeParse), addSellerInfo)
+            .put(protect, checkRoles([Role.SELLER]), ValidateBody(EditSellerInfoBodyVal.safeParse), editSellerInfo);
 
         this.router
-            .route(`${users}/:id/block`);
+            .route(`${users}/:id/block`)
+            .patch(protect, checkRoles([Role.ADMIN]), blockUser);
 
         this.router
-            .route(`${users}/:id/unblock`);
+            .route(`${users}/:id/unblock`)
+            .patch(protect, checkRoles([Role.ADMIN]), unblockUser);
 
         this.router
             .route(`${users}/:id`)

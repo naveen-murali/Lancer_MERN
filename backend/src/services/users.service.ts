@@ -1,9 +1,8 @@
 import { Types } from 'mongoose';
 import { HttpException, NotFoundException } from '../exceptions';
-import { User } from '../models';
-import { SellerInfo } from '../models/sellerInfor.model';
+import { User, SellerInfo } from '../models';
 import { Coll, Role } from '../util';
-import { AddSellerInfoBody, EditUserBody } from '../validation';
+import { AddSellerInfoBody, EditSellerInfoBody, EditUserBody } from '../validation';
 
 interface SearchInter {
     search: string;
@@ -14,6 +13,7 @@ interface SearchInter {
 
 export class UserService {
     private User = User;
+    private SellerInfo = SellerInfo;
 
     getAllUsers = async (query: SearchInter) => {
         const pageSize = Number(query.pageSize) || 10;
@@ -56,7 +56,7 @@ export class UserService {
 
 
     addSellerInfo = async (userId: string, sellerData: AddSellerInfoBody) => {
-        const userExists = await User.findById(userId).select('-password -isBlocked');
+        const userExists = await this.User.findById(userId).select('-password -isBlocked');
 
         if (!userExists)
             throw new NotFoundException('user not found');
@@ -64,7 +64,7 @@ export class UserService {
         if (!userExists.isEmailVarified || !userExists.isPhoneVerified)
             throw new HttpException(401, "credential varification is not completed");
 
-        const newSellerInfo = await SellerInfo.create({
+        const newSellerInfo = await this.SellerInfo.create({
             ...sellerData,
             user: userId
         });
@@ -115,8 +115,46 @@ export class UserService {
         user.name = userInfo.name || user.name;
         user.password = userInfo.password || user.password;
 
-        await user.save()
-        return true
+        await user.save();
+        return true;
+    };
+
+
+    blockUser = async (id: string) => {
+        const user = await this.User.findById(id).exec();
+        if (!user)
+            throw new NotFoundException('user not found');
+
+        user.isBlocked = true;
+
+        await user.save();
+        return true;
+    };
+
+
+    unblockUser = async (id: string) => {
+        const user = await this.User.findById(id).exec();
+        if (!user)
+            throw new NotFoundException('user not found');
+
+        user.isBlocked = false;
+
+        await user.save();
+        return true;
+    };
+
+
+    editSellerInfo = async (id: string, editInfo: EditSellerInfoBody) => {
+        const sellerInfo = await this.SellerInfo.findOne({ user: id }).exec();
+        if (!sellerInfo)
+            throw new NotFoundException('seller info not found');
+
+        sellerInfo.description = editInfo.description || sellerInfo.description;
+        sellerInfo.personalWebsite = editInfo.personalWebsite || sellerInfo.personalWebsite;
+        sellerInfo.certifications = editInfo.certifications || sellerInfo.certifications;
+        sellerInfo.skills = editInfo.skills || sellerInfo.skills;
+
+        return await sellerInfo.save();
     };
 
 }

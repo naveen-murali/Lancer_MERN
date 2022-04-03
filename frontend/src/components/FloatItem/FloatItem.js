@@ -26,7 +26,7 @@ export const FloatItem = ({ show, closeAction, children }) => {
             }, 0);
             time2 = setTimeout(() => {
                 setState(false);
-            }, 400);
+            }, 340);
         }
 
         return () => {
@@ -37,12 +37,8 @@ export const FloatItem = ({ show, closeAction, children }) => {
 
     return (
         <div ref={ref}
-            onClick={(e) => {
-                if (e.target === ref.current)
-                    closeAction(e);
-            }}
-            className={state ? 'confirmAlert show' : 'confirmAlert'}>
-            <div className={`col-12 col-sm-6 col-lg-4 col-xl-3 border-0 rounded-2 shadow confrimAlert-card bg-white ${showCard ? 'show' : 'hide'}`}>
+            className={state ? 'confirmAlert show p-3' : 'confirmAlert p-3'}>
+            <div className={`col-12 col-sm-6 col-lg-4 col-xl-3 border-0 position-relative rounded-2 shadow confrimAlert-card bg-white ${showCard ? 'show' : 'hide'}`}>
                 <div className='border-0 rounded-2'
                     style={{ overflow: 'hidden' }}>
                     {loading && <Box sx={{ width: '100%' }}>

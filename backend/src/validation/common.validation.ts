@@ -61,9 +61,21 @@ export const Image = z
         public_id: z
             .string({
                 invalid_type_error: 'public id should be a string',
-                required_error: "public id is required"
             })
             .optional(),
+        url: z
+            .string({
+                invalid_type_error: 'url id should be a string',
+                required_error: "url id is required"
+            })
+    });
+
+export const ServiceImage = z
+    .object({
+        public_id: z
+            .string({
+                invalid_type_error: 'public id should be a string',
+            }),
         url: z
             .string({
                 invalid_type_error: 'url id should be a string',
@@ -90,6 +102,15 @@ export const Category = z
     })
     .length(24, {
         message: "category id should have length of 24"
+    });
+
+export const Subcategory = z
+    .string({
+        invalid_type_error: 'subcategory should be a string',
+        required_error: "subcategory is required"
+    })
+    .length(24, {
+        message: "subcategory id should have length of 24"
     });
 
 export const PersonalWebsite = z
@@ -119,3 +140,29 @@ export const Skill = z.object({
             required_error: "level should be a string"
         })
 });
+
+export const PackagesDetails = z.object({
+    price: z.number({
+        required_error: "price required",
+        invalid_type_error: "price should be a number"
+    }),
+    deliveryTime: z.number({
+        required_error: "delivery time required",
+        invalid_type_error: "delivery time should be a number"
+    }),
+    revision: z.number({
+        required_error: "revision required",
+        invalid_type_error: "revision should be a number"
+    }),
+});
+
+export const Packages = z.object(
+    {
+        basic: PackagesDetails,
+        standard: PackagesDetails,
+        premium: PackagesDetails
+    },
+    {
+        invalid_type_error: "packages should be an object consists of basic, standard and premium"
+    }
+);

@@ -4,7 +4,7 @@ import { BadRequestException, HttpException } from '../exceptions';
 import { AdminModel, CustomRequest, UserModel } from '../interface';
 import { UserService } from '../services';
 import { Role } from '../util';
-import { AddSellerInfoBody, EditUserBody } from '../validation';
+import { AddSellerInfoBody, EditSellerInfoBody, EditUserBody } from '../validation';
 
 interface SearchInter {
     search: string;
@@ -31,7 +31,7 @@ export class UserController {
 
 
     // @desc        Get all the users
-    // @rout        POST /users/sellers
+    // @rout        POST /users/:id/sellers
     // @acce        User[Buyer]
     addSellerInfo = asyncHandler(async (req: CustomRequest, res: Response) => {
         const user = <UserModel>req.headers['user'];
@@ -71,7 +71,7 @@ export class UserController {
 
     // @desc        Editing user
     // @rout        PUT /users/:id
-    // @acce        User/Admin
+    // @acce        User
     editUser = asyncHandler(async (req: CustomRequest, res: Response) => {
         const id = req.params.id as unknown as string;
         const body: EditUserBody = req.body;
@@ -84,7 +84,47 @@ export class UserController {
             throw new HttpException(401, "You can't access this information");
 
         await this.userService.editUser(id, body);
+        res.status(201).json({});
+    });
+
+
+    // @desc        Block user
+    // @rout        PUT /users/:id/block
+    // @acce        Admin
+    blockUser = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+
+        await this.userService.blockUser(id);
         res.status(204).json({});
+    });
+
+
+    // @desc        Unblock user
+    // @rout        PUT /users/:id/unblock
+    // @acce        Admin
+    unblockUser = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+
+        await this.userService.unblockUser(id);
+        res.status(204).json({});
+    });
+
+
+    // @desc        Edit user info
+    // @rout        PUT /users/:id/sellers
+    // @acce        Users[Seller]
+    editSellerInfo = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+        const body = <EditSellerInfoBody>req.body;
+
+        const { description, personalWebsite, certifications, skills } = await this.userService.editSellerInfo(id, body);
+        const sellerInfo: EditSellerInfoBody = {
+            description,
+            personalWebsite,
+            certifications,
+            skills
+        };
+        res.status(201).json(sellerInfo);
     });
 
 }

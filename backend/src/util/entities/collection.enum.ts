@@ -5,5 +5,6 @@ export enum Coll {
     ADMIN = 'admins',
     LANCER = "lancers",
     REFERRAL = 'referrals',
-    SELLER_INFO = 'sellerInfo'
+    SELLER_INFO = 'sellerInfo',
+    SERVICES = 'services'
 }

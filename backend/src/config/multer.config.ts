@@ -7,7 +7,7 @@ import { HttpException } from '../exceptions';
 const storage = multer.memoryStorage();
 
 const checkImageType = (_req: Request<ParamsDictionary, any, any, Record<string, any>>, file: Express.Multer.File, cb: FileFilterCallback) => {
-    const filetypes = /jpg|jpeg|png/;
+    const filetypes = /jpg|jpeg|png|webp/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = filetypes.test(file.mimetype);
 

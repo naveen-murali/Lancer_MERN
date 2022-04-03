@@ -51,6 +51,11 @@ const userSchema: Schema = new Schema(
             required: true,
             default: 0
         },
+        widrowWallet: {
+            type: Number,
+            required: true,
+            default: 0
+        },
         referralId: {
             type: String,
             required: true,

@@ -11,6 +11,7 @@ export class AuthResponse {
     public image: object;
     public role: Role[];
     public wallet: number;
+    public widrowWallet: number;
     public referralId: string;
     public token: string;
     public sellerInfo: any;
@@ -29,6 +30,7 @@ export class AuthResponse {
 
         this.role = user.role || [];
         this.wallet = user.wallet || 0;
+        this.widrowWallet = user.widrowWallet || 0;
         this.referralId = user.referralId || "";
         this.token = token || '';
 

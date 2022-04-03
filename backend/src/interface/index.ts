@@ -7,3 +7,4 @@ export * from './referrals.interface';
 export * from './jwt.interface';
 export * from './category.interface';
 export * from './subCategory.interface';
+export * from './service.interface';

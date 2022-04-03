@@ -7,6 +7,7 @@ import cloudinary from 'cloudinary';
 import {
     AuthRoutes,
     CategoryRoutes,
+    ServiceRoutes,
     UploadRoutes,
     UserRoutes
 } from './routes';
@@ -22,7 +23,13 @@ cloudinary.v2.config({
 });
 
 const app = new App(
-    [new AuthRoutes(), new UserRoutes(), new UploadRoutes(), new CategoryRoutes()]
+    [
+        new AuthRoutes(),
+        new UserRoutes(),
+        new ServiceRoutes(),
+        new CategoryRoutes(),
+        new UploadRoutes(),
+    ]
 );
 
 app.listen();

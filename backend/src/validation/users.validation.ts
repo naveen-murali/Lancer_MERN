@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Certification, Description, Email, Name, Password, PersonalWebsite, Skill } from './common.validation';
+import { Certification, Description, Name, Password, PersonalWebsite, Skill } from './common.validation';
 
 
 // edit user profile
@@ -26,3 +26,21 @@ export const AddSellerInfoBodyVal = z.object({
         })
 });
 export type AddSellerInfoBody = z.infer<typeof AddSellerInfoBodyVal>;
+
+
+// edit user profile
+export const EditSellerInfoBodyVal = z.object({
+    description: Description.optional(),
+    personalWebsite: PersonalWebsite.optional(),
+    certifications: z
+        .array(Certification, {
+            required_error: "certifications is required",
+            invalid_type_error: "certifications should be an array"
+        }).optional(),
+    skills: z
+        .array(Skill, {
+            required_error: "skills is required",
+            invalid_type_error: "skills should be an array"
+        }).optional()
+});
+export type EditSellerInfoBody = z.infer<typeof EditSellerInfoBodyVal>;

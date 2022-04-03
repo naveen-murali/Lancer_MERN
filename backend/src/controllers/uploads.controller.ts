@@ -12,8 +12,6 @@ export class UploadController {
     // @desc       Uploading single image
     // @rout       POST /uploads/image
     imageUpload = asyncHandler(async (req: Request, res: Response) => {
-        console.log('here');
-        
         if (req.file)
             cloudinary.v2.uploader.upload_stream(
                 {

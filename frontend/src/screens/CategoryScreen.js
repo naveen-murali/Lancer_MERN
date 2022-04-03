@@ -327,6 +327,7 @@ const CategoryScreen = () => {
               </Col>
             </Row>
           </Container>
+          
         </Form>
       </FloatItem>
 

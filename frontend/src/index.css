@@ -169,8 +169,10 @@ input:focus {
 
 
 /* button types in the uintyshop */
-.us-btn, .us-btn-outline:hover,
-.us-btn:hover, .us-btn-outline {
+.us-btn,
+.us-btn-outline:hover,
+.us-btn:hover,
+.us-btn-outline {
     width: 100%;
     font-size: 14px;
     font-family: 'Poppins', sans-serif;
@@ -184,12 +186,14 @@ input:focus {
 }
 
 
-.us-btn, .us-btn-outline:hover {
+.us-btn,
+.us-btn-outline:hover {
     background-color: var(--black) !important;
     font-weight: 500;
 }
 
-.us-btn:hover, .us-btn-outline {
+.us-btn:hover,
+.us-btn-outline {
     color: var(--black) !important;
     font-weight: 500;
     background: none !important;
@@ -246,7 +250,8 @@ input:focus {
     color: #d9534f;
 }
 
-.us-edit-btn, .us-delete-btn {
+.us-edit-btn,
+.us-delete-btn {
     padding: 0.2rem 1rem !important;
     font-size: 12px;
 }
@@ -326,7 +331,6 @@ input:focus {
     align-items: center;
     justify-content: flex-start;
     padding: 0 !important;
-    /* margin: 0 0 0 0.5rem !important; */
     background-color: transparent !important;
     color: #1a1a1a !important;
 }
@@ -367,29 +371,34 @@ input:focus {
     font-weight: 700 !important;
 }
 
-.confirmAlert, .brandCreateDelete {
+.confirmAlert::-webkit-scrollbar-track {
+    background: transparent;
+}
+.confirmAlert,
+.brandCreateDelete {
     z-index: 10001;
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
-    min-height: 100vh;
-    background: #1a1a1a54;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background: #1a203834;
     opacity: 0;
+    overflow-y:scroll;
+    overflow-x:hidden;
     pointer-events: none;
     transform: all 0.5s ease;
 }
 
-.confirmAlert.show, .brandCreateDelete.show {
+.confirmAlert.show,
+.brandCreateDelete.show {
     opacity: 1;
     pointer-events: all;
 }
 
 .confrimAlert-card {
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -40%) scale(0.2);
     transition: all 0.35s ease-in-out;
 }
 
@@ -404,12 +413,9 @@ input:focus {
 
 .confrimAlert-card.show {
     animation: linear 0.35s popup;
-    /* color: rgb(112, 112, 112); */
-    transform: translate(-50%, -40%) scale(1);
 }
 
 .product-card {
-    /* box-shadow: 0 5px 15px rgb(0 0 0 / 10%) !important; */
     transition: all 0.3s linear;
 }
 
@@ -604,29 +610,29 @@ input:focus {
 
 @keyframes popup {
     0% {
-        transform: translate(-50%, -40%) scale(0.2);
+        transform: scale(0.2);
     }
 
     50% {
-        transform: translate(-50%, -40%) scale(1.25);
+        transform: scale(1.25);
     }
 
     100% {
-        transform: translate(-50%, -40%) scale(1);
+        transform: scale(1);
     }
 }
 
 @keyframes popdown {
     0% {
-        transform: translate(-50%, -40%) scale(1);
+        transform: scale(1);
     }
 
     50% {
-        transform: translate(-50%, -40%) scale(1.25);
+        transform: scale(1.25);
     }
 
     100% {
-        transform: translate(-50%, -40%) scale(0.2);
+        transform: scale(0.2);
     }
 }
 

@@ -54,7 +54,7 @@ export const CropImage = ({ src, imageCallback, closeHander }) => {
                             className='us-btn mx-1'
                             style={{ width: 'fit-content' }}
                             onClick={clickHndler}>
-                            Corp
+                            Crop
                         </Button>
                     </Col>
                 </Row>

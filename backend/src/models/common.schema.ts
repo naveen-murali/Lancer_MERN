@@ -16,3 +16,19 @@ export const Image = new Schema(
         _id: false
     }
 );
+
+export const ServiceImage = new Schema(
+    {
+        public_id: {
+            type: String,
+            required: true,
+        },
+        url: {
+            type: String,
+            required: true,
+        }
+    },
+    {
+        _id: false
+    }
+);
