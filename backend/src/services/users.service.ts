@@ -112,6 +112,7 @@ export class UserService {
         if (!user)
             throw new NotFoundException('user not found');
 
+        user.image = userInfo.image || user.image;
         user.name = userInfo.name || user.name;
         user.password = userInfo.password || user.password;
 

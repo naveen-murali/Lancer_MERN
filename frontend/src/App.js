@@ -18,6 +18,8 @@ import {
 } from './components';
 import { getMainAlert } from './features/MainAlert/mainAlertSlice';
 import CategoryDetailsScreen from './screens/CategoryDetailsScreen';
+import ServiceScreen from './screens/ServiceScreen';
+import NotFoundScreen from './screens/NotFoundScreen';
 
 
 const App = () => {
@@ -31,17 +33,28 @@ const App = () => {
           <Route path='/login' element={adminInfo ? <Navigate to='/' /> : <LoginScreen />} />
           <Route path='/' element={<AuthGuard childern={<HomeScreen />} />} />
 
-          <Route path='/users' element={<AuthGuard childern={<UsersScreen />} />} />
-          <Route path='/users/page/:pageNumber' element={<AuthGuard childern={<UsersScreen />} />} />
-          <Route path='/users/:search/page/:pageNumber' element={<AuthGuard childern={<UsersScreen />} />} />
+          <Route path='/users'>
+            <Route path='' element={<AuthGuard childern={<UsersScreen />} />} />
+            <Route path='page/:pageNumber' element={<AuthGuard childern={<UsersScreen />} />} />
+            <Route path=':search/page/:pageNumber' element={<AuthGuard childern={<UsersScreen />} />} />
+          </Route>
+
+          <Route path='/services'>
+            <Route path='' element={<AuthGuard childern={<ServiceScreen />} />} />
+            <Route path='page/:pageNumber' element={<AuthGuard childern={<ServiceScreen />} />} />
+            <Route path=':search/page/:pageNumber' element={<AuthGuard childern={<ServiceScreen />} />} />
+          </Route>
 
           <Route path='/payments' element={<AuthGuard childern={<PaymentScreen />} />} />
 
-          <Route path='/categories' element={<AuthGuard childern={<CategoryScreen />} />} />
-          <Route path='/categories/page/:pageNumber' element={<AuthGuard childern={<CategoryScreen />} />} />
-          <Route path='/categories/:search/page/:pageNumber' element={<AuthGuard childern={<CategoryScreen />} />} />
+          <Route path='/categories'>
+            <Route path='' element={<AuthGuard childern={<CategoryScreen />} />} />
+            <Route path=':id' element={<AuthGuard childern={<CategoryDetailsScreen />} />} />
+            <Route path='page/:pageNumber' element={<AuthGuard childern={<CategoryScreen />} />} />
+            <Route path=':search/page/:pageNumber' element={<AuthGuard childern={<CategoryScreen />} />} />
+          </Route>
 
-          <Route path='/categories/:id' element={<AuthGuard childern={<CategoryDetailsScreen />} />} />
+          <Route path='*' element={<AuthGuard childern={<NotFoundScreen />} />} />
         </Routes>
 
         {adminInfo && <Footer />}

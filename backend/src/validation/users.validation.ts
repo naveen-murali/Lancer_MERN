@@ -1,11 +1,12 @@
 import { z } from 'zod';
-import { Certification, Description, Name, Password, PersonalWebsite, Skill } from './common.validation';
+import { Certification, Description, Image, Name, Password, PersonalWebsite, Skill } from './common.validation';
 
 
 // edit user profile
 export const EditUserBodyVal = z.object({
     name: Name.optional(),
     password: Password.optional(),
+    image: Image.optional()
 });
 export type EditUserBody = z.infer<typeof EditUserBodyVal>;
 

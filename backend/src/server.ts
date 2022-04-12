@@ -1,17 +1,20 @@
 import { config } from "dotenv";
+import colors from 'colors';
+import cloudinary from 'cloudinary';
 import { App } from './app';
+import { setupSocketIo } from './socket';
 import { validateEnv } from './validation';
 import { createTwilioClient } from './config';
-import cloudinary from 'cloudinary';
-
 import {
     AuthRoutes,
     CategoryRoutes,
+    MessageRoutes,
     ServiceRoutes,
     UploadRoutes,
     UserRoutes
 } from './routes';
 
+colors.enable()
 config();
 validateEnv();
 createTwilioClient();
@@ -28,8 +31,10 @@ const app = new App(
         new UserRoutes(),
         new ServiceRoutes(),
         new CategoryRoutes(),
+        new MessageRoutes(),
         new UploadRoutes(),
-    ]
+    ],
+    setupSocketIo
 );
 
 app.listen();

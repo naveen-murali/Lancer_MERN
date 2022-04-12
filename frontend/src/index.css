@@ -57,6 +57,7 @@
 
 body {
     background-color: var(--body--background);
+    overflow: visible;
 }
 
 header {

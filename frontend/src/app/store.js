@@ -3,6 +3,7 @@ import { adminReducer } from '../features/Admin/adminSlice';
 import { categoriesReducers } from '../features/Category/categorySlice';
 import { loadingReducer } from '../features/Loading/loadingSlice';
 import { mainAlertReducer } from '../features/MainAlert/mainAlertSlice';
+import { servicesReducers } from '../features/Services/servicesSlices';
 import { usersReducer } from '../features/Users/usersSlice';
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     loading: loadingReducer,
     admin: adminReducer,
     users: usersReducer,
-    categories: categoriesReducers
+    categories: categoriesReducers,
+    services: servicesReducers
   },
 });

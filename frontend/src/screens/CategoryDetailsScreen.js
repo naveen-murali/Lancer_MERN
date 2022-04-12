@@ -3,7 +3,7 @@ import { Badge, Button, Col, Container, Form, Image, Row, Table } from 'react-bo
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { ConfirmBox, FloatItem, Message, Meta, Portal } from '../components';
+import { ConfirmBox, FloatItem, GoBack, Message, Meta, Portal } from '../components';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
@@ -116,27 +116,26 @@ const CategoryDetailsScreen = () => {
                     ? <Meta title='Error | Lancer' />
                     : <Meta title={`${category.title} | Lancer`} />
                 }
-                <Container className="mt-2">
-                    <Row className='gy-2 justify-content-center'>
-                        <Col lg={4} md={6} xs={12} className='d-flex flex-column align-items-center  bg-white p-3 rounded-2 shadow'>
-                            <Row className='gy-3'>
-                                <Col xs={12}>
-                                    <h4 className='align-self-start letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
-                                        Category Details
-                                    </h4>
-                                </Col>
-                                <Col xs={12}>
-                                    {image?.url &&
-                                        <div>
-                                            <Image fluid src={image.url} />
-                                        </div>}
-                                </Col>
-                                <Col xs={12} className='d-flex flex-column    justify-content-center' >
+                <GoBack fluid />
+                <Container fluid className="mt-2">
+                    <Row className='gy-2 justify-content-center px-md-5'>
+                        <Col xl={3} md={6} xs={12} className="p-0">
+                            <Col md={11} xs={12} className='d-flex flex-column align-items-center bg-white p-3 rounded-2 shadow'>
+
+                                <h4 className='align-self-start letter-spacing-1 m-0 mb-2' style={{ fontSize: '24px' }}>
+                                    Category Details
+                                </h4>
+                                {image?.url &&
+                                    <div>
+                                        <Image fluid src={image.url} />
+                                    </div>}
+
+                                <Col xs={12} className='d-flex flex-column mt-3 justify-content-center' >
                                     <p className='p-0 m-0'>
                                         <strong className='bold'>Category Id: </strong>{' '}
                                         {catId}
                                     </p>
-                                    <p className='p-0 m-0'>
+                                    <p className='p-0 m-0 mt-1'>
                                         <strong className='bold'>Title: </strong>{' '}
                                         {title}
                                     </p>
@@ -150,117 +149,118 @@ const CategoryDetailsScreen = () => {
                                             : <Badge pill bg="success">Available</Badge>}
                                     </p>
                                 </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-
-                    <Row className='gy-2 mt-3 p-3 bg-white shadow rounded-2'>
-                        <Col lg={6} xs={12} className='d-flex m-0 align-items-center'>
-                            <h4 className='letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
-                                Subcategories
-                            </h4>
-                        </Col>
-                        <Col lg={6} xs={12} className='text-end'>
-                            <Box sx={{ '& > :not(style)': { m: 1 } }} >
-                                <Fab
-                                    onClick={() => {
-                                        setFormData({
-                                            title: '',
-                                            description: '',
-                                        });
-                                        setChangeCategory(prev =>
-                                        ({
-                                            ...prev,
-                                            show: true,
-                                            action: "ADD"
-                                        }));
-                                    }}
-                                    size="small"
-                                    color="success"
-                                    className='shadow'
-                                    aria-label="add">
-                                    <AddIcon />
-                                </Fab>
-                            </Box>
+                            </Col>
                         </Col>
 
-                        <Col xs={12}>
-                            <Table bordered hover responsive
-                                className='table-sm m-0'>
-                                <thead>
-                                    <tr className="table-active border">
-                                        <th>ID</th>
-                                        <th>TITLE</th>
-                                        <th>DESCRIPTION</th>
-                                        <th>IS Blocked</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {error
-                                        ? <tr>
-                                            <td colSpan={6} className='p-0 mt-0'>
-                                                <Message variant='danger' className='my-1'>{error}</Message>
-                                            </td>
+                        <Col lg={9} className='gy-2 p-3 bg-white shadow rounded-2'>
+                            <Col xs={12} className='d-flex m-0 align-items-center justify-content-between'>
+                                <h4 className='letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
+                                    Subcategories
+                                </h4>
+                                {/* </Col>
+                            <Col lg={6} xs={12} className='text-end'> */}
+                                <Box sx={{ '& > :not(style)': { m: 1 } }} >
+                                    <Fab
+                                        onClick={() => {
+                                            setFormData({
+                                                title: '',
+                                                description: '',
+                                            });
+                                            setChangeCategory(prev =>
+                                            ({
+                                                ...prev,
+                                                show: true,
+                                                action: "ADD"
+                                            }));
+                                        }}
+                                        size="small"
+                                        color="success"
+                                        className='shadow'
+                                        aria-label="add">
+                                        <AddIcon />
+                                    </Fab>
+                                </Box>
+                            </Col>
+
+                            <Col xs={12}>
+                                <Table bordered hover responsive
+                                    className='table-sm m-0'>
+                                    <thead>
+                                        <tr className="table-active border">
+                                            <th>ID</th>
+                                            <th>TITLE</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>IS Blocked</th>
+                                            <th></th>
                                         </tr>
-                                        : (!subcategory || !subcategory.length)
+                                    </thead>
+                                    <tbody>
+                                        {error
                                             ? <tr>
-                                                <td colSpan={5}>
-                                                    <Message variant='danger' className='m-0'>No Subcatagory yet</Message>
+                                                <td colSpan={6} className='p-0 mt-0'>
+                                                    <Message variant='danger' className='my-1'>{error}</Message>
                                                 </td>
                                             </tr>
-                                            : subcategory.map(cate => (
-                                                <tr key={cate._id} style={{ verticalAlign: 'center !important' }}>
-                                                    <td>{cate._id}</td>
-                                                    <td><span style={{ whiteSpace: 'nowrap' }}>{cate.title}</span></td>
-                                                    <td><span style={{ whiteSpace: 'nowrap' }}>{cate.description}</span></td>
+                                            : (!subcategory || !subcategory.length)
+                                                ? <tr>
+                                                    <td colSpan={5}>
+                                                        <Message variant='danger' className='m-0'>No Subcatagory yet</Message>
+                                                    </td>
+                                                </tr>
+                                                : subcategory.map(cate => (
+                                                    <tr key={cate._id} style={{ verticalAlign: 'center !important' }}>
+                                                        <td>{cate._id}</td>
+                                                        <td><span style={{ whiteSpace: 'nowrap' }}>{cate.title}</span></td>
+                                                        <td><span style={{ whiteSpace: 'nowrap' }}>{cate.description}</span></td>
 
-                                                    <td className='text-center'>
-                                                        {cate.isBlocked
-                                                            ? (<Badge pill bg="danger">Blocked</Badge>)
-                                                            : (<Badge pill bg="success">Available</Badge>)}
-                                                    </td>
-                                                    <td className='text-center'>
-                                                        <span className='mx-auto' style={{ display: 'inline-flex' }}>
-                                                            <Button
-                                                                variant='light'
-                                                                onClick={() => {
-                                                                    setFormData({
-                                                                        title: cate.title,
-                                                                        description: cate.description,
-                                                                    });
-                                                                    setChangeCategory({
-                                                                        action: "EDIT",
-                                                                        show: true,
-                                                                        payload: cate._id
-                                                                    });
-                                                                }}
-                                                                className='us-edit-btn border'>
-                                                                <i className='fas fa-edit'></i>
-                                                            </Button>
-                                                            <Button
-                                                                variant={cate.isBlocked ? 'success' : 'danger'}
-                                                                className='us-delete-btn border'
-                                                                onClick={() => {
-                                                                    setConfirmBox(prev => ({
-                                                                        ...prev,
-                                                                        show: true,
-                                                                        dataHandler: {
-                                                                            payload: cate._id,
-                                                                            action: cate.isBlocked ? 'UNBLOCK' : 'BLOCK'
-                                                                        },
-                                                                        message: `Do you want to ${cate.isBlocked ? 'unblock' : 'block'} ${cate.title}?`
-                                                                    }));
-                                                                }}>
-                                                                {cate.isBlocked
-                                                                    ? <i className='fas fa-check'></i>
-                                                                    : <i className="fa-solid fa-ban"></i>}
-                                                            </Button>
-                                                        </span>
-                                                    </td>
-                                                </tr>))}
-                                </tbody>
-                            </Table>
+                                                        <td className='text-center'>
+                                                            {cate.isBlocked
+                                                                ? (<Badge pill bg="danger">Blocked</Badge>)
+                                                                : (<Badge pill bg="success">Available</Badge>)}
+                                                        </td>
+                                                        <td className='text-center'>
+                                                            <span className='mx-auto' style={{ display: 'inline-flex' }}>
+                                                                <Button
+                                                                    variant='light'
+                                                                    onClick={() => {
+                                                                        setFormData({
+                                                                            title: cate.title,
+                                                                            description: cate.description,
+                                                                        });
+                                                                        setChangeCategory({
+                                                                            action: "EDIT",
+                                                                            show: true,
+                                                                            payload: cate._id
+                                                                        });
+                                                                    }}
+                                                                    className='us-edit-btn border'>
+                                                                    <i className='fas fa-edit'></i>
+                                                                </Button>
+                                                                <Button
+                                                                    variant={cate.isBlocked ? 'success' : 'danger'}
+                                                                    className='us-delete-btn border'
+                                                                    onClick={() => {
+                                                                        setConfirmBox(prev => ({
+                                                                            ...prev,
+                                                                            show: true,
+                                                                            dataHandler: {
+                                                                                payload: cate._id,
+                                                                                action: cate.isBlocked ? 'UNBLOCK' : 'BLOCK'
+                                                                            },
+                                                                            message: `Do you want to ${cate.isBlocked ? 'unblock' : 'block'} ${cate.title}?`
+                                                                        }));
+                                                                    }}>
+                                                                    {cate.isBlocked
+                                                                        ? <i className='fas fa-check'></i>
+                                                                        : <i className="fa-solid fa-ban"></i>}
+                                                                </Button>
+                                                            </span>
+                                                        </td>
+                                                    </tr>))}
+                                    </tbody>
+                                </Table>
+                            </Col>
+
                         </Col>
                     </Row>
 
@@ -325,72 +325,76 @@ const CategoryDetailsScreen = () => {
 const DetailsLoading = () => {
     return <>
         <Meta title='Loading... | Lancer' />
-        <Container className="mt-2">
-            <Row className='gy-2 justify-content-center'>
-                <Col lg={4} md={6} xs={12} className='d-flex flex-column align-items-center  bg-white p-3 rounded-2 shadow'>
-                    <Row className='gy-3'>
-                        <Col xs={12}>
-                            <h4 className='align-self-start letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
-                                Category Details
-                            </h4>
-                        </Col>
-                        <Col xs={12} className='d-flex flex-column    justify-content-center' >
-                            <Skeleton variant="rectangular" className='w-100' height={200} />
-                            <Skeleton width="75%" />
-                            <Skeleton width="65%" />
-                            <Skeleton width="85%" />
-                            <div className='d-flex justify-content-end'>
-                                <Skeleton width="20%" />
-                            </div>
-                        </Col>
-                    </Row>
+        <Container fluid className="mt-2">
+            <Row className='gy-2 justify-content-center px-md-5'>
+                <Col lg={3} md={6} xs={12} className="p-0">
+                    <Col md={11} xs={12} className='d-flex flex-column align-items-center bg-white p-3 rounded-2 shadow'>
+                        {/* <Col xs={12}> */}
+                        <h4 className='align-self-start letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
+                            Category Details
+                        </h4>
+                        {/* </Col> */}
+                        {/* <Col xs={12} className='d-flex flex-column    justify-content-center' > */}
+                        <Skeleton variant="rectangular" className='w-100' height={200} />
+                        <Skeleton width="75%" />
+                        <Skeleton width="65%" />
+                        <Skeleton width="85%" />
+                        <div className='d-flex justify-content-end'>
+                            <Skeleton width="20%" />
+                        </div>
+                        {/* </Col> */}
+                    </Col>
                 </Col>
-            </Row>
-            <Row className='gy-2 mt-3 p-3 bg-white shadow rounded-2'>
-                <Col lg={6} xs={12} className='d-flex m-0 align-items-center'>
-                    <h4 className='letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
-                        Subcategories
-                    </h4>
-                </Col>
-                <Col lg={6} xs={12} className='text-end'>
-                    <Box sx={{ '& > :not(style)': { m: 1 } }} >
-                        <Fab
-                            size="small"
-                            color="success"
-                            className='shadow'
-                            aria-label="add">
-                            <AddIcon />
-                        </Fab>
-                    </Box>
-                </Col>
-                <Col xs={12}>
-                    <Table bordered hover responsive
-                        className='table-sm m-0'>
-                        <thead>
-                            <tr className="table-active border">
-                                <th>ID</th>
-                                <th>TITLE</th>
-                                <th>DESCRIPTION</th>
-                                <th>IS Blocked</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td className='p-1 py-0' colSpan={5}><Skeleton height={50} animation="wave" /></td>
-                            </tr>
-                            <tr>
-                                <td className='p-1 py-0' colSpan={5}><Skeleton height={50} animation="wave" /></td>
-                            </tr>
-                            <tr>
-                                <td className='p-1 py-0' colSpan={5}><Skeleton height={50} animation="wave" /></td>
-                            </tr>
-                        </tbody>
-                    </Table>
+
+                <Col lg={9} className='gy-2 p-3 bg-white shadow rounded-2'>
+                    <Col xs={12} className='d-flex m-0 align-items-center justify-content-between'>
+                        <h4 className='letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
+                            Subcategories
+                        </h4>
+                        {/* </Col>
+                    <Col lg={6} xs={12} className='text-end'> */}
+                        <Box sx={{ '& > :not(style)': { m: 1 } }} >
+                            <Fab
+                                size="small"
+                                color="success"
+                                className='shadow'
+                                aria-label="add">
+                                <AddIcon />
+                            </Fab>
+                        </Box>
+                    </Col>
+                    <Col xs={12}>
+                        <Table bordered hover responsive
+                            className='table-sm m-0'>
+                            <thead>
+                                <tr className="table-active border">
+                                    <th>ID</th>
+                                    <th>TITLE</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>IS Blocked</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td className='p-1 py-0' colSpan={5}><Skeleton height={50} animation="wave" /></td>
+                                </tr>
+                                <tr>
+                                    <td className='p-1 py-0' colSpan={5}><Skeleton height={50} animation="wave" /></td>
+                                </tr>
+                                <tr>
+                                    <td className='p-1 py-0' colSpan={5}><Skeleton height={50} animation="wave" /></td>
+                                </tr>
+                                <tr>
+                                    <td className='p-1 py-0' colSpan={5}><Skeleton height={50} animation="wave" /></td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </Col>
                 </Col>
             </Row>
         </Container>
     </>;
 };
 
-export default CategoryDetailsScreen;;;;
+export default CategoryDetailsScreen;

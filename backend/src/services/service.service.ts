@@ -1,17 +1,12 @@
 import { Types } from "mongoose";
 import { NotFoundException } from '../exceptions';
-import { Category, Service, SubCategory } from '../models';
+import { ServiceSearchModal } from '../interface';
+import { Category, Chat, Service, SubCategory } from '../models';
 import { Coll } from '../util';
 import { CreateSeviceBody, EditSeviceBody } from '../validation';
 
-interface SearchInter {
-    search: string;
-    page: string;
-    pageSize: string;
-    sort: Object;
-}
-
 export class ServiceService {
+    private Chat = Chat;
     private Service = Service;
     private Category = Category;
     private SubCategory = SubCategory;
@@ -37,11 +32,12 @@ export class ServiceService {
         return await newService.save();
     };
 
+
     editService = async (serviceId: string, userId: string, serviceData: EditSeviceBody) => {
         const service = await this.Service.findOne({
-                _id: new Types.ObjectId(serviceId),
-                user: new Types.ObjectId(userId)
-            });
+            _id: new Types.ObjectId(serviceId),
+            user: new Types.ObjectId(userId)
+        });
 
         if (!service)
             throw new NotFoundException('service not found');
@@ -49,8 +45,7 @@ export class ServiceService {
         if (
             (serviceData.category || serviceData.category) &&
             !(
-                service.category.toString() === serviceData.category
-                &&
+                service.category.toString() === serviceData.category &&
                 service.subcategory.toString() === serviceData.subcategory
             )
         ) {
@@ -84,7 +79,8 @@ export class ServiceService {
         return await service.save();
     };
 
-    getServices = async (query: SearchInter) => {
+
+    getServices = async (query: ServiceSearchModal) => {
         const keys = Object.keys(query.sort);
         const values = Object.values(query.sort);
 
@@ -99,7 +95,7 @@ export class ServiceService {
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
 
-        const keyword = query.search
+        const keyword: any = query.search
             ? {
                 $or: [
                     {
@@ -117,9 +113,15 @@ export class ServiceService {
                 ],
                 isBlocked: false,
                 isDeleted: false,
-                isActive: true
+                isActive: true,
             }
             : {};
+
+        if (query.category)
+            keyword.category = new Types.ObjectId(query.category);
+        
+        if (query.subcategory)
+            keyword.subcategory = new Types.ObjectId(query.subcategory);
 
         const count = await this.Service.countDocuments({ ...keyword });
         const services = await this.Service.aggregate([
@@ -202,7 +204,8 @@ export class ServiceService {
         };
     };
 
-    getUsersServices = async (userId: string, query: SearchInter) => {
+
+    getUsersServices = async (userId: string, query: ServiceSearchModal) => {
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
 
@@ -225,6 +228,8 @@ export class ServiceService {
                 user: new Types.ObjectId(userId),
                 isBlocked: false,
                 isDeleted: false,
+                category: query.category || { $exists: true },
+                subcategory: query.subcategory || { $exists: true }
             }
             : {};
 
@@ -244,7 +249,73 @@ export class ServiceService {
         };
     };
 
-    getServicesForAdmin = async (query: SearchInter) => {
+
+    getOneService = async (serviceId: string) => {
+        const service = await this.Service.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $eq: ["$_id", new Types.ObjectId(serviceId)]
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: Coll.USER,
+                    let: { user: "$user" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$_id", "$$user"]
+                                },
+                            }
+                        },
+                        {
+                            $project: { _id: 1, name: 1, image: 1 }
+                        },
+                        {
+                            $lookup: {
+                                from: Coll.SELLER_INFO,
+                                localField: "_id",
+                                foreignField: "user",
+                                as: 'user'
+                            }
+                        },
+                        {
+                            $replaceRoot: {
+                                newRoot: {
+                                    $mergeObjects: [
+                                        "$$ROOT", { $arrayElemAt: ["$user", 0] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $project: { user: 0 }
+                        }
+                    ],
+                    as: 'sellerInfo'
+                }
+            },
+            {
+                $unwind: "$sellerInfo"
+            },
+            {
+                $project: {
+                    user: 0,
+                    isActive: 0,
+                    isDeleted: 0,
+                    isBlocked: 0
+                }
+            }
+        ]).exec();
+
+        return service[0];
+    };
+
+
+    getServicesForAdmin = async (query: ServiceSearchModal) => {
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
 
@@ -266,6 +337,8 @@ export class ServiceService {
                 ],
                 isBlocked: false,
                 isDeleted: false,
+                category: query.category || { $exists: true },
+                subcategory: query.subcategory || { $exists: true }
             }
             : {};
 
@@ -284,6 +357,7 @@ export class ServiceService {
         };
     };
 
+
     activateService = async (serviceId: string) => {
         const service = await this.Service.findById(serviceId);
 
@@ -292,9 +366,10 @@ export class ServiceService {
 
         service.isActive = true;
         await service.save();
-        
+
         return true;
     };
+
 
     deactivateService = async (serviceId: string) => {
         const service = await this.Service.findById(serviceId);
@@ -304,31 +379,45 @@ export class ServiceService {
 
         service.isActive = false;
         await service.save();
-        
+
         return true;
     };
-    
+
+
     blockService = async (serviceId: string) => {
         const service = await this.Service.findById(serviceId);
 
         if (!service)
             throw new NotFoundException("service not found");
 
+        const chats = await this.Chat.find({ "order.service": new Types.ObjectId(serviceId) }).exec();
+        chats?.forEach(chat => {
+            chat.isBlocked = true;
+            chat.save();
+        });
+
         service.isBlocked = true;
         await service.save();
-        
+
         return true;
     };
-    
+
+
     unblockService = async (serviceId: string) => {
         const service = await this.Service.findById(serviceId);
 
         if (!service)
             throw new NotFoundException("service not found");
 
+        const chats = await this.Chat.find({ "order.service": new Types.ObjectId(serviceId) }).exec();
+        chats?.forEach(chat => {
+            chat.isBlocked = false;
+            chat.save();
+        });
+
         service.isBlocked = false;
         await service.save();
-        
+
         return true;
     };
 }

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler';
-import { BadRequestException, NotFoundException } from '../exceptions';
+import { BadRequestException } from '../exceptions';
 
 interface IssuesInter {
     message: string;

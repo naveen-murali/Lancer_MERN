@@ -5,4 +5,6 @@ export * from './referrals.model';
 export * from './category.model';
 export * from './subCategory.model';
 export * from './sellerInfor.model';
+export * from './chat.model';
+export * from './message.model';
 export * from './service.model';

@@ -55,6 +55,11 @@ export const Header = () => {
                 </LinkContainer>
               </Nav.Item>
               <Nav.Item>
+                <LinkContainer to='/services'>
+                  <Nav.Link eventKey="link-1">Services</Nav.Link>
+                </LinkContainer>
+              </Nav.Item>
+              <Nav.Item>
                 <LinkContainer to='/payments'>
                   <Nav.Link eventKey="link-2">Payments</Nav.Link>
                 </LinkContainer>
@@ -66,12 +71,14 @@ export const Header = () => {
               </Nav.Item>
               <Nav.Item>
                 <DropdownButton align="end"
-                  title={<Avatar sx={{ bgcolor: red[400] }}
-                    className='shadow'>
-                    {adminInfo.name.substring(0, 1)}
-                  </Avatar>}
+                  title={
+                    <Avatar sx={{ bgcolor: red[400] }}
+                      className='shadow mb-md-0 mb-3'>
+                      {adminInfo.name.substring(0, 1)}
+                    </Avatar>
+                  }
                   id="dropdown-menu-align-end"
-                  className='text-dark nav-drop prfile px-0 mx-0 py-lg-0 us-ml'>
+                  className='text-dark nav-drop prfile px-0 mx-0 py-md-0 py-2 us-ml'>
                   <LinkContainer to="/profile">
                     <Dropdown.Item>Profile</Dropdown.Item>
                   </LinkContainer>

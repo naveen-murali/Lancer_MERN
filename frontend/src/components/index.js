@@ -10,3 +10,5 @@ export * from './Portal/Portal';
 export * from './SearchBox/SearchBox';
 export * from './CroperImage/CroperImage';
 export * from './MainAlert/MainAlert';
+export * from './GoBack/GoBack';
+export * from './Ratings/Ratings';

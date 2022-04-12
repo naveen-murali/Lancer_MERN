@@ -2,6 +2,9 @@
 build/
 backend/build/
 
+# firebase config
+lancer-firebase.json
+
 # vs code
 *.code-workspace
 

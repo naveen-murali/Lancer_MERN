@@ -4,8 +4,7 @@ import { ServiceImage } from './common.schema';
 import { Coll } from '../util';
 
 
-
-const packageDetailsSchema: Schema = new Schema(
+export const packageDetailsSchema: Schema = new Schema(
     {
         price: {
             type: Number,

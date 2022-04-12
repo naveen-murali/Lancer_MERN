@@ -1,6 +1,6 @@
 import { ServiceImage } from './common.interface';
 
-interface PackagesDetails {
+export interface PackagesDetails {
     price: number;
     deliveryTime: number;
     revision: number;

@@ -16,7 +16,8 @@ import {
   SearchBox,
   Paginate,
   FloatItem,
-  CropImage
+  CropImage,
+  GoBack
 } from '../components';
 
 import {
@@ -124,228 +125,231 @@ const CategoryScreen = () => {
   };
 
   return (
-    <Container className="bg-white p-3 rounded-2 shadow">
-      <div className="col-12 conainer-fluid">
-        <Row className='gy-2'>
-          <Col lg={4} xs={12} className='d-flex align-items-center'>
-            <h3 className='letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
-              Category List
-            </h3>
-          </Col>
-          <Col lg={4} xs={12} className='d-flex align-items-center justify-content-center'>
-            <SearchBox
-              initialValue={''}
-              enterKeyword={searchHandle} />
-          </Col>
-          <Col lg={4} xs={12} className='text-end'>
-            <Box sx={{ '& > :not(style)': { m: 1 } }} >
-              <Fab
-                onClick={() => {
-                  setFormData({
-                    title: '',
-                    description: '',
-                    image: ''
-                  });
-                  setChangeCategory(prev => ({
-                    ...prev,
-                    show: true,
-                    action: "ADD"
-                  }));
-                }}
-                size="small"
-                color="success"
-                className='shadow'
-                aria-label="add">
-                <AddIcon />
-              </Fab>
-            </Box>
-          </Col>
-        </Row>
-      </div>
+    <>
+      <GoBack />
+      <Container className="bg-white p-3 rounded-2 shadow">
+        <div className="col-12 conainer-fluid">
+          <Row className='gy-2'>
+            <Col lg={4} xs={12} className='d-flex align-items-center'>
+              <h3 className='letter-spacing-1 m-0' style={{ fontSize: '24px' }}>
+                Category List
+              </h3>
+            </Col>
+            <Col lg={4} xs={12} className='d-flex align-items-center justify-content-center'>
+              <SearchBox
+                initialValue={''}
+                enterKeyword={searchHandle} />
+            </Col>
+            <Col lg={4} xs={12} className='text-end'>
+              <Box sx={{ '& > :not(style)': { m: 1 } }} >
+                <Fab
+                  onClick={() => {
+                    setFormData({
+                      title: '',
+                      description: '',
+                      image: ''
+                    });
+                    setChangeCategory(prev => ({
+                      ...prev,
+                      show: true,
+                      action: "ADD"
+                    }));
+                  }}
+                  size="small"
+                  color="success"
+                  className='shadow'
+                  aria-label="add">
+                  <AddIcon />
+                </Fab>
+              </Box>
+            </Col>
+          </Row>
+        </div>
 
-      {loading && !category
-        ? <Meta title='Loading... | Lancer' />
-        : error
-          ? <Meta title='Error | Lancer' />
-          : <Meta title='Categories | Lancer' />
-      }
+        {loading && !category
+          ? <Meta title='Loading... | Lancer' />
+          : error
+            ? <Meta title='Error | Lancer' />
+            : <Meta title='Categories | Lancer' />
+        }
 
-      <Table bordered hover responsive
-        className='table-sm m-0 mt-3'>
-        <thead>
-          <tr className="table-active border">
-            <th>ID</th>
-            <th>TITLE</th>
-            <th>DESCRIPTION</th>
-            <th>IMAGE</th>
-            <th>IS Blocked</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {error
-            ? <tr>
-              <td colSpan={6} className='p-0 mt-0'>
-                <Message variant='danger' className='my-1'>{error}</Message>
-              </td>
+        <Table bordered hover responsive
+          className='table-sm m-0 mt-3'>
+          <thead>
+            <tr className="table-active border">
+              <th>ID</th>
+              <th>TITLE</th>
+              <th>DESCRIPTION</th>
+              <th>IMAGE</th>
+              <th>IS Blocked</th>
+              <th></th>
             </tr>
-            : category?.map(cate => (
-              <tr key={cate._id} style={{ verticalAlign: 'center !important' }}>
-                <td>{cate._id}</td>
-                <td><span style={{ whiteSpace: 'nowrap' }}>{cate.title}</span></td>
-                <td><span style={{ whiteSpace: 'nowrap' }}>{cate.description}</span></td>
-                <td className='text-center'>
-                  <img style={{ width: '5rem' }} src={cate.image.url} alt={cate.image.url} />
+          </thead>
+          <tbody>
+            {error
+              ? <tr>
+                <td colSpan={6} className='p-0 mt-0'>
+                  <Message variant='danger' className='my-1'>{error}</Message>
                 </td>
-                <td className='text-center'>
-                  {cate.isBlocked
-                    ? (<Badge pill bg="danger">Blocked</Badge>)
-                    : (<Badge pill bg="success">Available</Badge>)}
-                </td>
-                <td className='text-center'>
-                  <span className='mx-auto' style={{ display: 'inline-flex' }}>
-                    <Button
-                      variant='light'
-                      onClick={() => {
-                        setFormData({
-                          title: cate.title,
-                          description: cate.description,
-                          image: cate.image.url
-                        });
-                        setChangeCategory({
-                          action: "EDIT",
-                          show: true,
-                          payload: cate._id
-                        });
-                      }}
-                      className='us-edit-btn border'>
-                      <i className='fas fa-edit'></i>
-                    </Button>
-                    <LinkContainer to={`/categories/${cate._id}`}>
+              </tr>
+              : category?.map(cate => (
+                <tr key={cate._id} style={{ verticalAlign: 'center !important' }}>
+                  <td>{cate._id}</td>
+                  <td><span style={{ whiteSpace: 'nowrap' }}>{cate.title}</span></td>
+                  <td><span style={{ whiteSpace: 'nowrap' }}>{cate.description}</span></td>
+                  <td className='text-center'>
+                    <img style={{ width: '5rem' }} src={cate.image.url} alt={cate.image.url} />
+                  </td>
+                  <td className='text-center'>
+                    {cate.isBlocked
+                      ? (<Badge pill bg="danger">Blocked</Badge>)
+                      : (<Badge pill bg="success">Available</Badge>)}
+                  </td>
+                  <td className='text-center'>
+                    <span className='mx-auto' style={{ display: 'inline-flex' }}>
                       <Button
                         variant='light'
+                        onClick={() => {
+                          setFormData({
+                            title: cate.title,
+                            description: cate.description,
+                            image: cate.image.url
+                          });
+                          setChangeCategory({
+                            action: "EDIT",
+                            show: true,
+                            payload: cate._id
+                          });
+                        }}
                         className='us-edit-btn border'>
-                        <RemoveRedEyeIcon className='p-0' />
+                        <i className='fas fa-edit'></i>
                       </Button>
-                    </LinkContainer>
-                    <Button
-                      variant={cate.isBlocked ? 'success' : 'danger'}
-                      className='us-delete-btn border'
-                      onClick={() => {
-                        setConfirmBox(prev => ({
-                          ...prev,
-                          show: true,
-                          dataHandler: {
-                            payload: cate._id,
-                            action: cate.isBlocked ? 'UNBLOCK' : 'BLOCK'
-                          },
-                          message: `Do you want to ${cate.isBlocked ? 'unblock' : 'block'} ${cate.title}?`
-                        }));
-                      }}>
-                      {cate.isBlocked
-                        ? <i className='fas fa-check'></i>
-                        : <i className="fa-solid fa-ban"></i>}
-                    </Button>
-                  </span>
-                </td>
-              </tr>))}
-        </tbody>
-      </Table>
+                      <LinkContainer to={`/categories/${cate._id}`}>
+                        <Button
+                          variant='light'
+                          className='us-edit-btn border'>
+                          <RemoveRedEyeIcon className='p-0' />
+                        </Button>
+                      </LinkContainer>
+                      <Button
+                        variant={cate.isBlocked ? 'success' : 'danger'}
+                        className='us-delete-btn border'
+                        onClick={() => {
+                          setConfirmBox(prev => ({
+                            ...prev,
+                            show: true,
+                            dataHandler: {
+                              payload: cate._id,
+                              action: cate.isBlocked ? 'UNBLOCK' : 'BLOCK'
+                            },
+                            message: `Do you want to ${cate.isBlocked ? 'unblock' : 'block'} ${cate.title}?`
+                          }));
+                        }}>
+                        {cate.isBlocked
+                          ? <i className='fas fa-check'></i>
+                          : <i className="fa-solid fa-ban"></i>}
+                      </Button>
+                    </span>
+                  </td>
+                </tr>))}
+          </tbody>
+        </Table>
 
-      <Col
-        xs={12}
-        style={{ height: 'fit-content !important' }}
-        className='d-flex justify-content-end mt-3'>
-        <Paginate
-          page={page}
-          pages={pages}
-          path={search
-            ? `/categories/${search}`
-            : '/categories'} />
-      </Col>
+        <Col
+          xs={12}
+          style={{ height: 'fit-content !important' }}
+          className='d-flex justify-content-end mt-3'>
+          <Paginate
+            page={page}
+            pages={pages}
+            path={search
+              ? `/categories/${search}`
+              : '/categories'} />
+        </Col>
 
-      <FloatItem show={changeCategory.show} closeAction={floatCloseActionHandler}>
-        <Form onSubmit={handleSubmit}>
+        <FloatItem show={changeCategory.show} closeAction={floatCloseActionHandler}>
+          <Form onSubmit={handleSubmit}>
 
-          <Container fluid>
-            <h4 className='letter-spacing-0 m-0 my-2' style={{ fontSize: '24px' }}>
-              {changeCategory.action === "ADD" ? <>Add Category</> : <>Edit Category</>}
-            </h4>
-            <Row>
-              <Form.Group controlId='title' className='mb-2'>
-                <Form.Label>Title</Form.Label>
-                <Form.Control type='text' placeholder='Enter a title'
-                  onChange={(e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))}
-                  value={formData.title ? formData.title : ""}
-                  name='title'
-                  className='border rounded-2' />
-              </Form.Group>
+            <Container fluid>
+              <h4 className='letter-spacing-0 m-0 my-2' style={{ fontSize: '24px' }}>
+                {changeCategory.action === "ADD" ? <>Add Category</> : <>Edit Category</>}
+              </h4>
+              <Row>
+                <Form.Group controlId='title' className='mb-2'>
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control type='text' placeholder='Enter a title'
+                    onChange={(e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))}
+                    value={formData.title ? formData.title : ""}
+                    name='title'
+                    className='border rounded-2' />
+                </Form.Group>
 
-              <Form.Group className='mb-2' controlId="description">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  name='description'
-                  as="textarea"
-                  rows={4}
-                  onChange={(e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))}
-                  value={formData.description ? formData.description : ""}
-                  className='border rounded-2' />
-              </Form.Group>
+                <Form.Group className='mb-2' controlId="description">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    name='description'
+                    as="textarea"
+                    rows={4}
+                    onChange={(e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))}
+                    value={formData.description ? formData.description : ""}
+                    className='border rounded-2' />
+                </Form.Group>
 
-              <Form.Group
-                controlId="image">
-                <Form.Label>Image</Form.Label>
+                <Form.Group
+                  controlId="image">
+                  <Form.Label>Image</Form.Label>
 
-                {(cropImage.croppedImge || formData.image) &&
-                  <div className='mb-2'>
-                    <Image width='200px'
-                      src={cropImage.croppedImge
-                        ? URL.createObjectURL(cropImage.croppedImge)
-                        : formData.image ? formData.image : ""} />
-                  </div>}
+                  {(cropImage.croppedImge || formData.image) &&
+                    <div className='mb-2'>
+                      <Image width='200px'
+                        src={cropImage.croppedImge
+                          ? URL.createObjectURL(cropImage.croppedImge)
+                          : formData.image ? formData.image : ""} />
+                    </div>}
 
-                <Form.Control
-                  type="file"
-                  name='image'
-                  onChange={(e) =>
-                    setCropImage(prev => ({ ...prev, croppingImge: e.target.files[0] }))}
-                  className='rounded-2 border'
-                  accept=".jpg,.jpeg,.png" />
-              </Form.Group>
+                  <Form.Control
+                    type="file"
+                    name='image'
+                    onChange={(e) =>
+                      setCropImage(prev => ({ ...prev, croppingImge: e.target.files[0] }))}
+                    className='rounded-2 border'
+                    accept=".jpg,.jpeg,.png" />
+                </Form.Group>
 
 
-              <Col md={4}></Col><Col md={4}></Col>
+                <Col md={4}></Col><Col md={4}></Col>
 
-              <Col md={4} className='justify-self-end'>
-                <Button type='submit' variant='dark'
-                  className='us-btn-outline mt-2 p-1'
-                  disabled={createLoading || editLoading}>
-                  {changeCategory.action === 'ADD'
-                    ? createLoading ? <>Creating...</> : <>Create</>
-                    : editLoading ? <>Update...</> : <>Update</>}
-                </Button>
-              </Col>
-            </Row>
-          </Container>
-          
-        </Form>
-      </FloatItem>
+                <Col md={4} className='justify-self-end'>
+                  <Button type='submit' variant='dark'
+                    className='us-btn-outline mt-2 p-1'
+                    disabled={createLoading || editLoading}>
+                    {changeCategory.action === 'ADD'
+                      ? createLoading ? <>Creating...</> : <>Create</>
+                      : editLoading ? <>Update...</> : <>Update</>}
+                  </Button>
+                </Col>
+              </Row>
+            </Container>
 
-      <Portal id='category-confirmBox'>
-        <ConfirmBox
-          show={confirmBox.show}
-          cancelAction={confirmBoxCancelAction}
-          confirmAction={confirmBoxConfirmAction}
-          message={confirmBox.message} />
-      </Portal>
+          </Form>
+        </FloatItem>
 
-      {cropImage.croppingImge && <Portal id='category-imageCrop'>
-        <CropImage
-          src={cropImage.croppingImge}
-          imageCallback={(img) => setCropImage({ croppingImge: null, croppedImge: img })}
-          closeHander={croperCloseHandler} />
-      </Portal>}
-    </Container>
+        <Portal id='category-confirmBox'>
+          <ConfirmBox
+            show={confirmBox.show}
+            cancelAction={confirmBoxCancelAction}
+            confirmAction={confirmBoxConfirmAction}
+            message={confirmBox.message} />
+        </Portal>
+
+        {cropImage.croppingImge && <Portal id='category-imageCrop'>
+          <CropImage
+            src={cropImage.croppingImge}
+            imageCallback={(img) => setCropImage({ croppingImge: null, croppedImge: img })}
+            closeHander={croperCloseHandler} />
+        </Portal>}
+      </Container>
+    </>
   );
 };
 

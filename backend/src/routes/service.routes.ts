@@ -23,7 +23,8 @@ export class ServiceRoutes implements Routes {
             activateService,
             deactivateService,
             blockService,
-            unblockService
+            unblockService,
+            getOneService
         } = this.serviceController;
 
         this.router
@@ -42,7 +43,7 @@ export class ServiceRoutes implements Routes {
         this.router
             .route(`${services}/:id/activate`)
             .patch(protect, checkRoles([Role.SELLER]), activateService);
-        
+
         this.router
             .route(`${services}/:id/deactivate`)
             .patch(protect, checkRoles([Role.SELLER]), deactivateService);
@@ -50,13 +51,14 @@ export class ServiceRoutes implements Routes {
         this.router
             .route(`${services}/:id/block`)
             .patch(protect, checkRoles([Role.ADMIN]), blockService);
-        
+
         this.router
             .route(`${services}/:id/unblock`)
             .patch(protect, checkRoles([Role.ADMIN]), unblockService);
 
         this.router
             .route(`${services}/:id`)
+            .get(getOneService)
             .put(protect, checkRoles([Role.SELLER]), ValidateBody(EditSeviceBodyVal.safeParse), editService);
     }
 

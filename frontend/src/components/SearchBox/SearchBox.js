@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
-export const SearchBox = ({ enterKeyword, initialValue }) => {
+export const SearchBox = ({ enterKeyword, initialValue, searchInputs }) => {
     const [keyword, setKeyword] = useState(initialValue);
 
     const submitHandler = (e) => {
@@ -22,14 +22,22 @@ export const SearchBox = ({ enterKeyword, initialValue }) => {
                 type='text'
                 name='keyword'
                 value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
+                onChange={(e) => {
+                    setKeyword(e.target.value);
+                    searchInputs(e.target.value);
+                }}
                 placeholder='Search'
                 className='mr-sm-2 border ml-sm-5 search-input' />
             <Button
                 type='submit'
                 className='us-btn search-btn rounded-0'
-                style={{ width: 'fit-content' }}
-            >Search</Button>
+                style={{ width: 'fit-content' }}>
+                Search
+            </Button>
         </Form>
     </>;
+};
+
+SearchBox.defaultProps = {
+    searchInputs: (input) => { }
 };

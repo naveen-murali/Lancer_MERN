@@ -12,5 +12,5 @@ export const checkRoles = (roles: Role[]) =>
         if (isAuthericed)
             next();
         else
-            next(new HttpException(401, 'Not authorized, no token'));
+            next(new HttpException(401, 'Not an authorized token'));
     };

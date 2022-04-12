@@ -1,15 +1,8 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { CustomRequest } from '../interface';
+import { CustomRequest, ServiceSearchModal } from '../interface';
 import { ServiceService } from '../services';
 import { CreateSeviceBody, EditSeviceBody } from '../validation';
-
-interface SearchInter {
-    search: string;
-    page: string;
-    pageSize: string;
-    sort: Object;
-}
 
 export class ServiceController {
 
@@ -32,9 +25,9 @@ export class ServiceController {
     // @rout        GET /services
     // @acce        Public
     getServices = asyncHandler(async (req: Request, res: Response) => {
-        const query = req.query as unknown as SearchInter;
-        const services = await this.categoryService.getServices((query as SearchInter));
-        res.status(201).json(services);
+        const query = req.query as unknown as ServiceSearchModal;
+        const services = await this.categoryService.getServices((query as ServiceSearchModal));
+        res.json(services);
     });
 
 
@@ -42,11 +35,22 @@ export class ServiceController {
     // @rout        GET /services/users
     // @acce        Users[Seller]
     getUsersServices = asyncHandler(async (req: CustomRequest, res: Response) => {
-        const query = req.query as unknown as SearchInter;
+        const query = req.query as unknown as ServiceSearchModal;
         const userId = req.headers['user']?._id as string;
 
         const services = await this.categoryService.getUsersServices(userId, query);
-        res.status(201).json(services);
+        res.json(services);
+    });
+
+
+    // @desc        Get one service
+    // @rout        GET /services/:id
+    // @acce        Users[Buyer]
+    getOneService = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const serviceId = req.params.id;
+
+        const service = await this.categoryService.getOneService(serviceId);
+        res.json(service);
     });
 
 
@@ -67,10 +71,10 @@ export class ServiceController {
     // @rout        PUT /services/admin
     // @acce        Admin
     getServicesForAdmin = asyncHandler(async (req: CustomRequest, res: Response) => {
-        const query = req.query as unknown as SearchInter;
+        const query = req.query as unknown as ServiceSearchModal;
 
         const service = await this.categoryService.getServicesForAdmin(query);
-        res.status(201).json(service);
+        res.json(service);
     });
 
 

@@ -16,7 +16,7 @@ export const getAsyncUsers = createAsyncThunk(
                     order: -1
                 }
             } = searchContent;
-            
+
             const { users } = getState().users.users;
             if (!users.length)
                 dispatch(showLoading());
@@ -32,6 +32,64 @@ export const getAsyncUsers = createAsyncThunk(
             dispatch(hideLoading());
 
             return data;
+        } catch (err) {
+            dispatch(hideLoading());
+            const message = err.response && err.response.data.message
+                ? err.response.data.message
+                : err.message;
+
+            dispatch(showErrorAlert(message));
+            throw new Error(message);
+        }
+    }
+);
+
+export const blockAsyncUser = createAsyncThunk(
+    "users/blockAsyncUsers",
+    async (userId, { dispatch, getState }) => {
+        try {
+            dispatch(showLoading());
+
+            const { token } = getState().admin.adminInfo;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            await axiosConfig.patch(`/users/${userId}/block`, {}, config);
+            dispatch(hideLoading());
+
+            return userId;
+        } catch (err) {
+            dispatch(hideLoading());
+            const message = err.response && err.response.data.message
+                ? err.response.data.message
+                : err.message;
+
+            dispatch(showErrorAlert(message));
+            throw new Error(message);
+        }
+    }
+);
+
+export const unblockAsyncUser = createAsyncThunk(
+    "users/unblockAsyncUsers",
+    async (userId, { dispatch, getState }) => {
+        try {
+            dispatch(showLoading());
+
+            const { token } = getState().admin.adminInfo;
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            await axiosConfig.patch(`/users/${userId}/unblock`, {}, config);
+            dispatch(hideLoading());
+
+            return userId;
         } catch (err) {
             dispatch(hideLoading());
             const message = err.response && err.response.data.message

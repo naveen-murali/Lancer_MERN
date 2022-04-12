@@ -8,3 +8,6 @@ export * from './jwt.interface';
 export * from './category.interface';
 export * from './subCategory.interface';
 export * from './service.interface';
+export * from './chat.interface';
+export * from './message.interface';
+export * from './search.interface';

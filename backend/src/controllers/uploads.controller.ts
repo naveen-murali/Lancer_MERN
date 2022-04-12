@@ -1,13 +1,10 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import cloudinary, { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
-import { AuthService } from '../services';
+import cloudinary from 'cloudinary';
 import { HttpException } from '../exceptions';
 
 
 export class UploadController {
-    public authService: AuthService = new AuthService();
-
 
     // @desc       Uploading single image
     // @rout       POST /uploads/image
@@ -18,9 +15,7 @@ export class UploadController {
                     resource_type: "image",
                     folder: 'Lancer'
                 },
-                (error, result: any) => {
-                    console.log("here");
-                    
+                (error, result: any) => {                    
                     if (error)
                         throw new HttpException(400, "Failed to upload the image");
                     else
