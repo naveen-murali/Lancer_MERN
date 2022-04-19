@@ -1,11 +1,16 @@
-import { ServiceImage } from './common.interface';
+import { SearchModel, ServiceImage } from './common.interface';
+
+export interface ServiceSearchModal extends SearchModel {
+    category: string;
+    subcategory: string;
+}
 
 export interface PackagesDetails {
     price: number;
     deliveryTime: number;
     revision: number;
 }
-interface Packages {
+interface PackagesModel {
     basic: PackagesDetails,
     standard: PackagesDetails,
     premium: PackagesDetails;
@@ -17,7 +22,7 @@ export interface ServiceModel {
     category: string;
     subcategory: string;
     images: ServiceImage[];
-    packages: Packages;
+    packages: PackagesModel;
     rating: number;
     totalReview: number;
     isActive: boolean;

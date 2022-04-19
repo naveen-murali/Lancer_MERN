@@ -3,7 +3,7 @@ import { ServiceController } from '../controllers';
 import { Routes } from "../interface";
 import { protect, checkRoles, ValidateBody } from '../middleware';
 import { Role } from '../util';
-import { CreateSeviceBodyVal, EditSeviceBodyVal } from '../validation';
+import { AddReviewBodyVal, AddSaveListBodyVal, CreateSeviceBodyVal, EditSeviceBodyVal } from '../validation';
 
 export class ServiceRoutes implements Routes {
     public path: string = "/services";
@@ -24,7 +24,12 @@ export class ServiceRoutes implements Routes {
             deactivateService,
             blockService,
             unblockService,
-            getOneService
+            getOneService,
+            getSaveList,
+            setSaveList,
+            deleteSaveList,
+            addReviews,
+            getReviews
         } = this.serviceController;
 
         this.router
@@ -39,6 +44,20 @@ export class ServiceRoutes implements Routes {
         this.router
             .route(`${services}/admin`)
             .get(protect, checkRoles([Role.ADMIN]), getServicesForAdmin);
+
+        this.router
+            .route(`${services}/save-list`)
+            .get(protect, checkRoles([Role.BUYER]), getSaveList)
+            .post(protect, checkRoles([Role.BUYER]), ValidateBody((AddSaveListBodyVal.safeParse)), setSaveList);
+
+        this.router
+            .route(`${services}/save-list/:id`)
+            .delete(protect, checkRoles([Role.BUYER]), deleteSaveList);
+
+        this.router
+            .route(`${services}/:id/reviews`)
+            .get(getReviews)
+            .post(protect, checkRoles([Role.BUYER]), ValidateBody(AddReviewBodyVal.safeParse), addReviews);
 
         this.router
             .route(`${services}/:id/activate`)

@@ -1,26 +1,16 @@
-import { ServicePackage } from '../util';
-import { PackagesDetails, ServiceModel } from './service.interface';
-import { UserModel } from './user.interface';
-
-interface OrderInterface {
-    buyer: string | UserModel;
-    seller: string | UserModel;
-    service: string | ServiceModel;
-    package: ServicePackage;
-}
-
-type MemberType = string | UserModel;
+import { CommonOrderModel, UserType } from './common.interface';
+import { PackagesDetails } from './service.interface';
 
 export interface ChatModel {
     _id: string;
-    members: [MemberType, MemberType];
-    order: OrderInterface;
+    members: [UserType, UserType];
+    order: CommonOrderModel;
     package: PackagesDetails;
     isOrdered: boolean;
     isNegotiated: boolean;
-    negotiatedPrice: Number;
-    negotiatedRevision: Number;
-    negotiatedDeliveryTime: Number;
+    negotiatedPrice: number;
+    negotiatedRevision: number;
+    negotiatedDeliveryTime: number;
     isBlocked: boolean;
     createdAt: Date;
     updatedAt: Date;

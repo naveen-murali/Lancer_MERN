@@ -1,8 +1,9 @@
 import { Types } from "mongoose";
 import cloudinary from 'cloudinary';
+import { Coll } from '../util';
+import { SearchModel } from '../interface';
 import { NotFoundException } from '../exceptions';
 import { Category, SubCategory } from '../models';
-import { Coll } from '../util';
 import {
     AddCategoryBody,
     AddSubCategoryBody,
@@ -10,13 +11,6 @@ import {
     EditSubCategoryBody
 } from '../validation';
 
-
-interface SearchInter {
-    search: string;
-    page: string;
-    pageSize: string;
-    sort: Object;
-}
 
 export class CategoryService {
     private Category = Category;
@@ -40,7 +34,7 @@ export class CategoryService {
     };
 
 
-    getAllCategoryForAdmin = async (query: SearchInter) => {
+    getAllCategoryForAdmin = async (query: SearchModel) => {
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
 

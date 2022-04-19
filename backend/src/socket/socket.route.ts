@@ -15,7 +15,8 @@ import {
     cancelOffer,
     sendMessage,
     offerAcceptBySeller,
-    getStatusOfAUser,
+    getStatusOfUser,
+    placeOrder
 } from './socket.controller';
 
 export const setupSocketIo: SetupSocketIo = (server: HttpServer) => {
@@ -33,11 +34,13 @@ export const setupSocketIo: SetupSocketIo = (server: HttpServer) => {
 
         socket.on(Events.MESSAGE, (message) => sendMessage(io, socket, message));
 
-        socket.on(`${Events.MESSAGE}/status`, (data) => getStatusOfAUser(socket, data));
-        
+        socket.on(`${Events.MESSAGE}/status`, (data) => getStatusOfUser(socket, data));
+
         socket.on(`${Events.MESSAGE}/cancel`, (data) => cancelOffer(io, socket, data));
 
         socket.on(`${Events.MESSAGE}/accept`, (data) => offerAcceptBySeller(io, socket, data));
+
+        socket.on(`${Events.ORDER}`, (data) => placeOrder(io, socket, data));
 
         socket.on(Events.DISCONNECTION, () => removeUser(io, socket.id));
     });

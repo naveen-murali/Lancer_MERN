@@ -3,7 +3,7 @@ import { Error } from 'mongoose';
 import { MongoError } from 'mongodb';
 import { HttpException } from '../exceptions';
 
-export const errorMiddleware = (err: HttpException | MongoError, req: Request, res: Response, next: NextFunction) => {
+export const errorMiddleware = (err: HttpException | MongoError , req: Request, res: Response, next: NextFunction) => {
     console.error(err);
 
     if (err instanceof Error.ValidationError)
@@ -28,7 +28,7 @@ export const errorMiddleware = (err: HttpException | MongoError, req: Request, r
 
         res.status(status).json({ message, errors });
     }
-
+        
     else {
         res.status(500).json({ message: err.message, error: [err.message] });
     }

@@ -2,6 +2,7 @@ namespace NodeJS {
     interface ProcessEnv {
         NODE_ENV: 'development' | 'production';
         PORT: string;
+        APP_URL: string;
         BODY_LIMIT: string;
         MULTER_FILE_LIMIT: string;
         MONGODB_URI: string;
@@ -12,8 +13,14 @@ namespace NodeJS {
         CLOUD_NAME: string;
         API_KEY: string;
         API_SCRETE: string;
-        PROJECT_ID: string;
-        CLIENT_EMAIL: string;
-        PRIVATE_KEY: string;
+
+        FIREBASE_PROJECT_ID: string;
+        FIREBASE_CLIENT_EMAIL: string;
+        FIREBASE_PRIVATE_KEY: string;
+
+        PAYPAL_CLIENT: string;
+        PAYPAL_SECRET: string;
+        PAYPAL_GET_ORDER_URL: string;
+        PAYPAL_REFUND_ORDER_URL: string;
     }
 }

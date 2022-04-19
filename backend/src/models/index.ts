@@ -8,3 +8,6 @@ export * from './sellerInfor.model';
 export * from './chat.model';
 export * from './message.model';
 export * from './service.model';
+export * from './order.model';
+export * from './transaction.model';
+export * from './review.model';

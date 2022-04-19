@@ -5,4 +5,7 @@ export * from './entities/collection.enum';
 export * from './entities/user.enum';
 export * from './entities/service.enum';
 export * from './entities/message.enum';
+export * from './entities/order.enum';
+export * from './entities/transaction.enum';
 export * from './authResponse.util';
+export * from './scrap.util';

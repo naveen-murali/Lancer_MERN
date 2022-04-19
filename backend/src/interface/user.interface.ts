@@ -1,27 +1,6 @@
 import { Role, SkillLevel } from "../util";
 import { Image } from "./common.interface";
 
-interface CertificationsInter {
-    title: string;
-    certifiedBy: string;
-    year: string;
-}
-interface SkillsInter {
-    title: string;
-    level: SkillLevel;
-}
-export interface SellerInfoModel {
-    _id: string;
-    user: string;
-    description: string;
-    personalWebsite?: string;
-    sellerEarning: number;
-    certifications: CertificationsInter[];
-    skills: SkillsInter[];
-    createdAt?: Date;
-    updatedAt?: Date;
-}
-
 export interface UserModel {
     _id?: string;
     name: string;
@@ -34,11 +13,32 @@ export interface UserModel {
     image?: Image;
     role: Role[];
     wallet: number;
-    widrowWallet: number;
+    withdrawedWallet: number;
     referralId: string;
     referralNum: Number;
     isBlocked?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
     matchPassword(enteredPassword: string): Promise<boolean>;
+}
+
+interface CertificationsModel {
+    title: string;
+    certifiedBy: string;
+    year: string;
+}
+interface SkillsModel {
+    title: string;
+    level: SkillLevel;
+}
+export interface SellerInfoModel {
+    _id: string;
+    user: string | UserModel;
+    description: string;
+    personalWebsite?: string;
+    sellerEarning: number;
+    certifications: CertificationsModel[];
+    skills: SkillsModel[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }

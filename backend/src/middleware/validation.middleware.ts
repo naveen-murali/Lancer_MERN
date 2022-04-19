@@ -1,16 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler';
 import { BadRequestException } from '../exceptions';
+import { ValidationMiddleware } from '../interface';
 
-interface IssuesInter {
-    message: string;
-}
-interface ValidationMiddleware {
-    success: boolean;
-    error: {
-        issues: IssuesInter[];
-    };
-}
 
 export const ValidateBody = (validationMethod: Function) =>
     asyncHandler((req: Request, res: Response, next: NextFunction) => {

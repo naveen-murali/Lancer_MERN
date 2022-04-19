@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import compression from 'compression';
 import { Mode } from './util';
 import { Routes } from './interface';
-import { createConnection, connectRedis, connectFirebase } from './config';
+import { createConnection, connectRedis, configFirebase, configPaypal } from './config';
 import { errorMiddleware } from './middleware/error.middleware';
 import { SetupSocketIo } from './socket';
 
@@ -14,7 +14,7 @@ export class App {
     private server: Server = http.createServer(this.app);
 
     constructor(routes: Routes[], setupSocketIo: SetupSocketIo) {
-        this.connectFirebase();
+        this.setUpConfigs();
         this.connectSocketIo(setupSocketIo);
         this.connectDatabase();
         this.initializeMiddleware();
@@ -22,12 +22,9 @@ export class App {
         this.initializeErrorHandling();
     }
 
-    getServer() {
-        this.app;
-    }
-
-    private connectFirebase(): void {
-        connectFirebase();
+    private setUpConfigs(): void {
+        configPaypal();
+        configFirebase();
     }
 
     private connectDatabase(): void {

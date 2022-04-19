@@ -2,14 +2,6 @@ import z from 'zod';
 import { ServicePackage } from '../util';
 
 export const CreateRoomBodyVal = z.object({
-    buyer: z
-        .string({
-            invalid_type_error: 'buyer should be a string',
-            required_error: "buyer is required"
-        })
-        .length(24, {
-            message: "buyer id should have an length of 24"
-        }),
     seller: z
         .string({
             invalid_type_error: 'seller should be a string',

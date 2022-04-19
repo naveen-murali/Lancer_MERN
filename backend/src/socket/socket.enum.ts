@@ -4,4 +4,5 @@ export enum Events {
     MESSAGE = 'message',
     CONNECTION = 'connection',
     DISCONNECTION = 'disconnect',
+    ORDER = 'orders'
 }

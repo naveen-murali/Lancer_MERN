@@ -1,8 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 import { SellerInfoModel } from '../interface';
 import { Coll } from '../util';
-import { SkillLevel } from '../util/entities/user.enum';
-
 
 const certificationsSchema = new Schema(
     {
@@ -40,12 +38,13 @@ const skillsSchema = new Schema(
     }
 );
 
-const sellerInfoSchema: Schema = new Schema(
+export const sellerInfoSchema: Schema = new Schema(
     {
         user: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
+            unique: true
         },
         description: {
             type: String,

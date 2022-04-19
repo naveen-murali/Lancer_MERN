@@ -166,3 +166,12 @@ export const Packages = z.object(
         invalid_type_error: "packages should be an object consists of basic, standard and premium"
     }
 );
+
+export const Chat = z
+    .string({
+        invalid_type_error: 'chat should be a string',
+        required_error: "chat is required"
+    })
+    .length(24, {
+        message: "chat id should have length of 24"
+    });

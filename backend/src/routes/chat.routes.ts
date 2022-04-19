@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { Routes } from "../interface";
 import { checkRoles, protect, ValidateBody } from '../middleware';
-import { MessageController } from '../controllers';
+import { ChatsController } from '../controllers';
 import { CreateRoomBodyVal } from '../validation';
 import { Role } from '../util';
 
-export class MessageRoutes implements Routes {
+export class ChatRoutes implements Routes {
     public path: string = "/chats";
     public router: Router = Router();
-    public uploadController: MessageController = new MessageController();
+    public chatController: ChatsController = new ChatsController();
 
     constructor() { this.initializeRoutes(); }
 
@@ -19,7 +19,7 @@ export class MessageRoutes implements Routes {
             createChat,
             getOneChat,
             getMessagesOfChat
-        } = this.uploadController;
+        } = this.chatController;
 
         this.router
             .route(`${chats}`)

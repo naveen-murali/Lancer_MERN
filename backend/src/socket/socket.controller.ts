@@ -1,19 +1,24 @@
-import { Server } from 'socket.io';
-import { redis } from '../config';
 import { Types } from 'mongoose';
+import { IO } from './socket.type';
 import { Events } from './socket.enum';
-import { Chat, Message } from '../models';
+import { paypal, redis } from '../config';
 import { CustomSocket } from './socket.interface';
-import { AcceptStatus, MessageTypes, Role } from '../util';
+import { Chat, Message, Order, Lancer, SellerInfo } from '../models';
+import { AcceptStatus, MessageTypes, PaymentPlatform, Role } from '../util';
 import {
     OfferBody,
     OfferBodyVal,
     MessageBody,
     MessageBodyVal,
     StatusEventBodyVal,
-    StatusEventBody
+    StatusEventBody,
+    PlaceOrderBodyVal,
+    PlaceOrderBody,
+    PaymentDetailsBody
 } from './socket.validation';
-import { IO } from './socket.type';
+import { BadRequestException, HttpException } from '../exceptions';
+import { AuthorizationResource, RelatedResources, Amount } from 'paypal-rest-sdk';
+
 
 interface IssuesInter {
     message: string;
@@ -114,11 +119,13 @@ export const sendMessage = async (io: IO, socket: CustomSocket, message: Message
             isBlocked: false
         });
 
+        // checking if reciver exists
+        if (!message.receiver)
+            return socket.emit(Events.ERROR, { message: 'reciver is not mensioned' });
+
         // if chat is exists or not
-        if (!chat) {
-            socket.emit(Events.ERROR, { message: 'chat not exits' });
-            return;
-        }
+        if (!chat)
+            return socket.emit(Events.ERROR, { message: 'chat not exits' });
 
         if (message.type === MessageTypes.FILE) {
             // choosed file but didn't provided its single or multiple??
@@ -179,9 +186,11 @@ export const sendMessage = async (io: IO, socket: CustomSocket, message: Message
         await chat.save();
 
         io.emit(`${Events.MESSAGE}/${message.chat}`, createdMessage);
+
+        /* sending message notification */
     } catch (err) {
         console.log(err);
-        
+
         socket.emit(Events.ERROR, { message: 'message failed' });
     }
 };
@@ -221,6 +230,8 @@ export const cancelOffer = async (io: IO, socket: CustomSocket, data: OfferBody)
         const updatedMessage = await message.save();
 
         io.emit(`${Events.MESSAGE}/${data.chat}/cancel`, updatedMessage);
+
+        /* send the oposite party that the other rejected the offer is the if its not been canceled bu the negotiator by him.her self */
     } catch (err) {
         socket.emit(Events.ERROR, { message: 'failed to change the status' });
     }
@@ -240,8 +251,6 @@ export const offerAcceptBySeller = async (io: IO, socket: CustomSocket, data: Of
         if (!message)
             return socket.emit(Events.ERROR, { message: "message not found" });
 
-        if (message.acceptStatus !== AcceptStatus.PENDING)
-            return socket.emit(Events.ERROR, { message: `can not accept an offer which is already ${message.acceptStatus}` });
 
         const chat = await Chat.findOne({
             _id: new Types.ObjectId(data.chat),
@@ -256,10 +265,15 @@ export const offerAcceptBySeller = async (io: IO, socket: CustomSocket, data: Of
         if (!userRole.some(role => role === Role.SELLER) || chat.order.seller.toString() !== userId.toString())
             return socket.emit(Events.ERROR, { message: "you are no the seller for the chat" });
 
+        if (message.acceptStatus !== AcceptStatus.PENDING)
+            return socket.emit(Events.ERROR, { message: `can not accept an offer which is already ${message.acceptStatus}` });
+
         message.acceptStatus = AcceptStatus.ACCEPTED;
         const updatedMessage = await message.save();
 
         io.emit(`${Events.MESSAGE}/${data.chat}/accept`, updatedMessage);
+
+        /* send notification to buyer that the seller is accepted the offer if the negotiation offer is not done by the seller */
     } catch (err) {
         console.log(err);
         socket.emit(Events.ERROR, { message: 'failed ot accept the negotiation' });
@@ -267,7 +281,7 @@ export const offerAcceptBySeller = async (io: IO, socket: CustomSocket, data: Of
 };
 
 
-export const getStatusOfAUser = async (socket: CustomSocket, data: StatusEventBody) => {
+export const getStatusOfUser = async (socket: CustomSocket, data: StatusEventBody) => {
     console.log(`[event] - ${Events.MESSAGE}/status`.bgMagenta);
     const userId = data.user;
 
@@ -285,5 +299,166 @@ export const getStatusOfAUser = async (socket: CustomSocket, data: StatusEventBo
         socket.emit(`${Events.MESSAGE}/${data.chat}/status`, emitStatus);
     } catch (err) {
         console.log(err);
+        socket.emit(Events.ERROR, { message: 'failed to fetch the status' });
+    }
+};
+
+
+type returndata = {
+    autherizeId: string;
+    amount: Amount;
+    createdAt: string,
+    updatedAt: string;
+};
+const autherizePayment = async (details: PaymentDetailsBody) => {
+    return new Promise(async (resolve, reject) => {
+        let execute_payment_json = {
+            payer_id: details.PayerID,
+        };
+
+        paypal.payment
+            .execute(
+                details.paymentId,
+                execute_payment_json,
+                (error, payment) => {
+                    if (error) {
+                        console.log(error.response);
+                        return reject(new HttpException(403, "failed to authrize the payment"));
+                    }
+
+                    const autherizeId = ((payment.transactions[0].related_resources as RelatedResources[])[0].authorization as AuthorizationResource).id;
+                    const amount = ((payment.transactions[0].related_resources as RelatedResources[])[0].authorization as AuthorizationResource).amount;
+
+                    const createdAt = payment.create_time;
+                    const updatedAt = payment.update_time;
+
+                    resolve({
+                        autherizeId,
+                        amount,
+                        createdAt,
+                        updatedAt
+                    });
+                }
+            );
+    });
+};
+
+const capturePayment = async (autherizeId: string, amount: Amount) => {
+    return new Promise(async (resolve, reject) => {
+        delete amount.details
+        let capture_details = {
+            is_final_capture: true,
+            amount,
+        };
+
+        paypal.authorization.capture(autherizeId, capture_details, function (error, capture) {
+            if (error) {
+                console.log(error);
+                return reject(new HttpException(403, "failed to capture the payment"));
+            } else {
+                return resolve(capture.id);
+            }
+        });
+    });
+};
+
+export const placeOrder = async (io: IO, socket: CustomSocket, orderData: PlaceOrderBody) => {
+    console.log(`[event] - ${Events.ORDER}`.bgMagenta);
+    const userId = socket.user as string;
+
+    try {
+        if (!validationSocketData(socket, PlaceOrderBodyVal.safeParse, orderData))
+            return;
+
+        if (orderData.platform !== PaymentPlatform.PAYPAL && orderData.platform !== PaymentPlatform.STRIP)
+            throw new BadRequestException("invalied payment platform");
+
+        const [messageExists, chat] = await Promise.all([
+            Message.exists({
+                chat: new Types.ObjectId(orderData.chat),
+                acceptStatus: {
+                    $exists: true,
+                    $ne: AcceptStatus.REJECTED
+                }
+            }),
+            Chat.findById(orderData.chat),
+        ]);
+
+        if (!chat)
+            return socket.emit(Events.ERROR, { message: 'chat not found' });
+
+        if (chat.order.buyer.toString() !== userId.toString())
+            return socket.emit(Events.ERROR, { message: 'unautherized user' });
+
+        if (chat.isOrdered)
+            return socket.emit(Events.ERROR, { message: 'order is already been placed' });
+
+        if (!messageExists)
+            return socket.emit(Events.ERROR, { message: 'unsolved negotiation exists' });
+
+        const data = await autherizePayment(orderData.paymentDetails) as unknown as returndata;
+        const captureId = await capturePayment(data.autherizeId, data.amount);
+
+        const lancer = await Lancer.findOne();
+        if (!lancer)
+            throw new Error("lancer document is not found");
+
+        const newOrder = new Order({
+            chat: orderData.chat,
+            isPaied: true,
+            paymentDetails: {
+                platform: orderData.platform,
+                paymentId: orderData.paymentDetails.paymentId,
+                commission: lancer.commission,
+                capturedId: captureId,
+                amount: chat.isNegotiated ? chat.negotiatedPrice : chat.package.price,
+                createdAt: data.createdAt,
+                updatedAt: data.updatedAt,
+            },
+            buyer: chat.order.buyer,
+            seller: chat.order.seller,
+            service: chat.order.service,
+            package: chat.order.package,
+            isNegotiated: chat.isNegotiated,
+            price: chat.isNegotiated ? chat.negotiatedPrice : chat.package.price,
+            deliveryTime: chat.isNegotiated ? chat.negotiatedDeliveryTime : chat.package.deliveryTime,
+            revision: chat.isNegotiated ? chat.negotiatedRevision : chat.package.revision,
+            remainingRevision: chat.isNegotiated ? chat.negotiatedRevision : chat.package.revision
+        });
+        const createdOrder = await newOrder.save();
+
+        // updating the admin wallet
+        lancer.wallet = createdOrder.price;
+        lancer.save().catch(() => { });
+
+        // updating the seller earings
+        const sellerEarning = createdOrder.price - (createdOrder.price * lancer.commission / 100);
+        SellerInfo.findOneAndUpdate(
+            {
+                user: createdOrder.seller
+            },
+            {
+                $inc: {
+                    sellerEarning: +sellerEarning
+                }
+            }
+        ).then(data => { /* Notification to the seller */ });
+
+        chat.isOrdered = true;
+        chat.save().catch(() => { });
+
+        const newMessage = new Message({
+            chat: orderData.chat,
+            type: MessageTypes.NOTIFICATION,
+            description: `Order has been placed for the "Rs. ${createdOrder.price}" ${createdOrder.isNegotiated ? "through negotiation." : "without any negotiation."}`
+        });
+        const createMessage = await newMessage.save();
+
+        io.emit(`${Events.MESSAGE}/${orderData.chat}`, createMessage);
+
+        /* send notification to both users in the chat that order is placed */
+    } catch (err) {
+        console.log(err);
+        socket.emit(Events.ERROR, { message: 'failed to create order' });
     }
 };

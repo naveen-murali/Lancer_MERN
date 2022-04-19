@@ -7,14 +7,16 @@ import { validateEnv } from './validation';
 import { createTwilioClient } from './config';
 import {
     AuthRoutes,
-    CategoryRoutes,
-    MessageRoutes,
+    UserRoutes,
     ServiceRoutes,
+    CategoryRoutes,
+    ChatRoutes,
+    OrderRoutes,
     UploadRoutes,
-    UserRoutes
+    TransactionRoutes,
 } from './routes';
 
-colors.enable()
+colors.enable();
 config();
 validateEnv();
 createTwilioClient();
@@ -31,7 +33,9 @@ const app = new App(
         new UserRoutes(),
         new ServiceRoutes(),
         new CategoryRoutes(),
-        new MessageRoutes(),
+        new ChatRoutes(),
+        new OrderRoutes(),
+        new TransactionRoutes(),
         new UploadRoutes(),
     ],
     setupSocketIo

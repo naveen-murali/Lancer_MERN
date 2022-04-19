@@ -1,7 +1,8 @@
 import { Types } from 'mongoose';
-import { HttpException, NotFoundException } from '../exceptions';
-import { User, SellerInfo } from '../models';
 import { Coll, Role } from '../util';
+import { UserModel } from '../interface';
+import { User, SellerInfo, Referrals } from '../models';
+import { HttpException, NotFoundException } from '../exceptions';
 import { AddSellerInfoBody, EditSellerInfoBody, EditUserBody } from '../validation';
 
 interface SearchInter {
@@ -13,6 +14,7 @@ interface SearchInter {
 
 export class UserService {
     private User = User;
+    private Referrals = Referrals;
     private SellerInfo = SellerInfo;
 
     getAllUsers = async (query: SearchInter) => {
@@ -145,6 +147,20 @@ export class UserService {
     };
 
 
+    deductFromSellerEarnings = async (sellerId: string, amount: number) => {
+        return await this.SellerInfo.findOneAndUpdate(
+            {
+                user: sellerId
+            },
+            {
+                $inc: {
+                    sellerEarning: -amount
+                }
+            }
+        );
+    };
+
+
     editSellerInfo = async (id: string, editInfo: EditSellerInfoBody) => {
         const sellerInfo = await this.SellerInfo.findOne({ user: id }).exec();
         if (!sellerInfo)
@@ -156,6 +172,58 @@ export class UserService {
         sellerInfo.skills = editInfo.skills || sellerInfo.skills;
 
         return await sellerInfo.save();
+    };
+
+
+    getSellerInfo = async (id: string) => {
+        const seller = await this.SellerInfo.findOne({ user: id })
+            .populate("user", "name image")
+            .select("-sellerEarning");
+
+        if (!seller)
+            throw new NotFoundException("seller not found");
+
+        const sellerInfo = {
+            name: (seller.user as UserModel).name,
+            image: (seller.user as UserModel).image,
+            description: seller.description,
+            personalWebsite: seller.personalWebsite,
+            certifications: seller.certifications,
+            skills: seller.skills
+        };
+
+        return sellerInfo;
+    };
+
+
+    getUsersEarnings = async (user: UserModel) => {
+        const [sellerInfo, referrals] = await Promise.all([
+            this.SellerInfo.findOne({ user: user._id }),
+            this.Referrals.findOne({ user: user._id })
+        ]);
+
+        const earnings = {
+            wallet: user.wallet,
+            withdrawedWallet: user.withdrawedWallet,
+            sellerEarning: sellerInfo && sellerInfo.sellerEarning,
+            referralEarnings: referrals
+                ? referrals.referrals.reduce((prev, referral) => prev + referral.amount, 0)
+                : 0
+        };        
+
+        return earnings;
+    };
+
+
+    getUsersReferrals = async (user: UserModel) => {
+        const referrals = await this.Referrals.findOne({ user: user._id });
+
+        return {
+            referralNum: user.referralNum || 0,
+            referralEarnings: referrals
+                ? referrals.referrals.reduce((prev, referral) => prev + referral.amount, 0)
+                : 0
+        };
     };
 
 }

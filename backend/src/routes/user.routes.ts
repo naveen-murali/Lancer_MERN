@@ -21,7 +21,10 @@ export class UserRoutes implements Routes {
             editUser,
             blockUser,
             unblockUser,
-            editSellerInfo
+            getSellerInfo,
+            editSellerInfo,
+            getUsersEarnings,
+            getUsersReferrals
         } = this.userController;
 
         this.router
@@ -29,7 +32,16 @@ export class UserRoutes implements Routes {
             .get(protect, checkRoles([Role.ADMIN]), getAllUsers);
 
         this.router
+            .route(`${users}/:id/earnings`)
+            .get(protect, checkRoles([Role.BUYER]), getUsersEarnings);
+
+        this.router
+            .route(`${users}/:id/referrals`)
+            .get(protect, checkRoles([Role.BUYER]), getUsersReferrals);
+
+        this.router
             .route(`${users}/:id/sellers`)
+            .get(getSellerInfo)
             .post(protect, checkRoles([Role.BUYER]), ValidateBody(AddSellerInfoBodyVal.safeParse), addSellerInfo)
             .put(protect, checkRoles([Role.SELLER]), ValidateBody(EditSellerInfoBodyVal.safeParse), editSellerInfo);
 
@@ -43,7 +55,7 @@ export class UserRoutes implements Routes {
 
         this.router
             .route(`${users}/:id`)
-            .get(protect, getUserById)
+            .get(protect, checkRoles([Role.BUYER]), getUserById)
             .put(protect, checkRoles([Role.BUYER, Role.SELLER]), ValidateBody(EditUserBodyVal.safeParse), editUser);
     }
 

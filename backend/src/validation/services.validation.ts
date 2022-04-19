@@ -32,4 +32,18 @@ export const EditSeviceBodyVal = z.object({
         ).optional(),
     packages: Packages.optional()
 });
-export type EditSeviceBody = z.infer<typeof EditSeviceBodyVal>; 
+export type EditSeviceBody = z.infer<typeof EditSeviceBodyVal>;
+
+
+// adding service to service list
+export const AddSaveListBodyVal = z.object({
+    serviceId: z
+        .string({
+            required_error: "serviceId is required",
+            invalid_type_error: "serviceId should be a string"
+        })
+        .length(24, {
+            message: "serviceId should be 24 charector in length"
+        })
+});
+export type AddSaveListBody = z.infer<typeof AddSaveListBodyVal>

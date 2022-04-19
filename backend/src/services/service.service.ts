@@ -1,15 +1,18 @@
 import { Types } from "mongoose";
-import { NotFoundException } from '../exceptions';
-import { ServiceSearchModal } from '../interface';
-import { Category, Chat, Service, SubCategory } from '../models';
 import { Coll } from '../util';
-import { CreateSeviceBody, EditSeviceBody } from '../validation';
+import { BadRequestException, NotFoundException } from '../exceptions';
+import { SaveList } from '../models/saveList.model';
+import { ServiceSearchModal, UserModel } from '../interface';
+import { AddReviewBody, CreateSeviceBody, EditSeviceBody } from '../validation';
+import { Category, Chat, Service, SubCategory, Review } from '../models';
 
 export class ServiceService {
     private Chat = Chat;
     private Service = Service;
+    private SaveList = SaveList;
     private Category = Category;
     private SubCategory = SubCategory;
+    private Review = Review;
 
     createService = async (userId: string, serviceData: CreateSeviceBody) => {
         const [cat, sub] = await Promise.all([
@@ -119,7 +122,7 @@ export class ServiceService {
 
         if (query.category)
             keyword.category = new Types.ObjectId(query.category);
-        
+
         if (query.subcategory)
             keyword.subcategory = new Types.ObjectId(query.subcategory);
 
@@ -419,5 +422,88 @@ export class ServiceService {
         await service.save();
 
         return true;
+    };
+
+
+    setSaveList = async (userId: string, serviceId: string) => {
+        await this.SaveList.findOneAndUpdate(
+            { user: userId },
+            {
+                $addToSet: {
+                    saveList: new Types.ObjectId(serviceId)
+                }
+            },
+            { upsert: true }
+        );
+
+        return true;
+    };
+
+
+    getSaveList = async (userId: string) => {
+        return await this.SaveList.findOne({ user: userId })
+            .populate("saveList", "-isBlocked -isDeleted -isActive");
+    };
+
+
+    deleteSaveList = async (userId: string, serviceId: string) => {
+        return await this.SaveList.updateOne(
+            {
+                user: userId
+            },
+            {
+                $pull: {
+                    saveList: new Types.ObjectId(serviceId)
+                }
+            }
+        );
+    };
+
+
+    addReviews = async (user: UserModel, serviceId: string, reviewDetails: AddReviewBody) => {
+        let [review, service] = await Promise.all([
+            this.Review.findOne({ service: serviceId }),
+            this.Service.findById(serviceId)
+        ]);
+
+        if (!service)
+            throw new NotFoundException("service not found");
+
+        service.totalReview++;
+
+        if (!review) {
+            review = new this.Review({
+                service: serviceId,
+                reviews: [{
+                    user: new Types.ObjectId((user._id as string)),
+                    rating: reviewDetails.rating,
+                    description: reviewDetails.description
+                }]
+            });
+            service.rating = reviewDetails.rating;
+        } else {
+            if (review.reviews.some(review => review.user.toString() === user._id?.toString()))
+                throw new BadRequestException("you already reviewed the service");
+
+            review.reviews = [
+                ...review.reviews,
+                {
+                    user: new Types.ObjectId((user._id as string)),
+                    rating: reviewDetails.rating,
+                    description: reviewDetails.description
+                }
+            ];
+            service.rating = review.reviews.reduce((acc, review) =>
+                acc + review.rating, 0) / review.reviews.length;
+        }
+
+        await Promise.all([service.save(), review.save()]);
+        return true;
+    };
+
+
+    getReviews = async (serviceId: string) => {
+        return await this.Review.findOne({ service: serviceId })
+            .populate("reviews.user", "name image");
     };
 }

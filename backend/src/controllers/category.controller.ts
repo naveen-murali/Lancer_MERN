@@ -1,15 +1,14 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { CustomRequest } from '../interface';
+import { CustomRequest, SearchModel } from '../interface';
 import { CategoryService } from '../services';
-import { AddCategoryBody, AddSubCategoryBody, EditCategoryBody, EditSubCategoryBody } from '../validation';
+import {
+    AddCategoryBody,
+    AddSubCategoryBody,
+    EditCategoryBody,
+    EditSubCategoryBody
+} from '../validation';
 
-interface SearchInter {
-    search: string;
-    page: string;
-    pageSize: string;
-    sort: Object;
-}
 
 export class CategoryController {
 
@@ -41,7 +40,7 @@ export class CategoryController {
     // @rout        GET /category/admin
     // @acce        Admin
     getAllCategoryForAdmin = asyncHandler(async (req: Request, res: Response) => {
-        const query = req.query as unknown as SearchInter;
+        const query = req.query as unknown as SearchModel;
 
         const category = await this.categoryService.getAllCategoryForAdmin(query);
         res.json(category);

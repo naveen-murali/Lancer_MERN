@@ -51,7 +51,7 @@ const userSchema: Schema = new Schema(
             required: true,
             default: 0
         },
-        widrowWallet: {
+        withdrawedWallet: {
             type: Number,
             required: true,
             default: 0

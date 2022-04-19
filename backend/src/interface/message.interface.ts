@@ -7,6 +7,7 @@ export interface MessageModel {
     sender: string;
     receiver: string;
     type: MessageTypes;
+    description: string;
     file: ServiceImage;
     files: ServiceImage[];
     price: Number;

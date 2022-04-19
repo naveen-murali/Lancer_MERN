@@ -1,18 +1,11 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { BadRequestException, HttpException } from '../exceptions';
-import { AdminModel, CustomRequest, UserModel } from '../interface';
-import { UserService } from '../services';
 import { Role } from '../util';
+import { UserService } from '../services';
+import { BadRequestException, HttpException } from '../exceptions';
+import { CustomRequest, UserModel, SearchModel } from '../interface';
 import { AddSellerInfoBody, EditSellerInfoBody, EditUserBody } from '../validation';
 
-interface SearchInter {
-    search: string;
-    page: string;
-    pages: string;
-    pageSize: string;
-    sort: Object;
-}
 
 export class UserController {
 
@@ -23,7 +16,7 @@ export class UserController {
     // @rout        POST /users
     // @acce        Admin
     getAllUsers = asyncHandler(async (req: Request, res: Response) => {
-        const query = req.query as unknown as SearchInter;
+        const query = req.query as unknown as SearchModel;
         const users = await this.userService.getAllUsers(query);
 
         res.json(users);
@@ -45,24 +38,80 @@ export class UserController {
     });
 
 
+    // @desc        Edit user info
+    // @rout        PUT /users/:id/sellers
+    // @acce        Users[Seller]
+    editSellerInfo = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+        const body = <EditSellerInfoBody>req.body;
+
+        const { description, personalWebsite, certifications, skills } = await this.userService.editSellerInfo(id, body);
+        const sellerInfo: EditSellerInfoBody = {
+            description,
+            personalWebsite,
+            certifications,
+            skills
+        };
+        res.status(201).json(sellerInfo);
+    });
+
+
+    // @desc        Get user info
+    // @rout        GET /users/:id/sellers
+    // @acce        Public
+    getSellerInfo = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+        const sellerInfo = await this.userService.getSellerInfo(id);
+
+        res.json(sellerInfo);
+    });
+
+
+    // @desc        Get user earnings
+    // @rout        GET /users/:id/earnings
+    // @acce        User
+    getUsersEarnings = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+        const user = req.headers['user'] as UserModel;
+
+        if ((user._id as string).toString() !== id)
+            throw new HttpException(401, "invalied credential");
+
+        const earnings = await this.userService.getUsersEarnings(user);
+
+        res.json(earnings);
+    });
+
+
+    // @desc        Get user referral info
+    // @rout        GET /users/:id/referrals
+    // @acce        User
+    getUsersReferrals = asyncHandler(async (req: CustomRequest, res: Response) => {
+        const id = req.params.id as unknown as string;
+        const user = req.headers['user'] as UserModel;
+
+        if ((user._id as string).toString() !== id)
+            throw new HttpException(401, "invalied credential");
+
+        const referral = await this.userService.getUsersReferrals(user);
+
+        res.json(referral);
+    });
+
+
     // @desc        Get user by id
     // @rout        GET /users
     // @acce        User/Admin
     getUserById = asyncHandler(async (req: CustomRequest, res: Response) => {
         const id = req.params.id as unknown as string;
 
-        const body = req.headers['user'] as UserModel | AdminModel;
+        const body = <UserModel>req.headers['user'];
 
         if (!id)
             throw new BadRequestException("id is missing");
 
-        if (
-            body && body._id &&
-            !body.role.includes(Role.ADMIN) &&
-            id !== body._id.toString()
-        ) {
+        if (body && body._id && id !== body._id.toString())
             throw new HttpException(401, "You can't access this information");
-        }
 
         const user = await this.userService.getUserById(id);
         res.json(user);
@@ -75,7 +124,7 @@ export class UserController {
     editUser = asyncHandler(async (req: CustomRequest, res: Response) => {
         const id = req.params.id as unknown as string;
         const body: EditUserBody = req.body;
-        const user = req.headers['user'] as UserModel | AdminModel;
+        const user = <UserModel>req.headers['user'];
 
         if (!id)
             throw new BadRequestException("id is missing");
@@ -107,24 +156,6 @@ export class UserController {
 
         await this.userService.unblockUser(id);
         res.status(204).json({});
-    });
-
-
-    // @desc        Edit user info
-    // @rout        PUT /users/:id/sellers
-    // @acce        Users[Seller]
-    editSellerInfo = asyncHandler(async (req: CustomRequest, res: Response) => {
-        const id = req.params.id as unknown as string;
-        const body = <EditSellerInfoBody>req.body;
-
-        const { description, personalWebsite, certifications, skills } = await this.userService.editSellerInfo(id, body);
-        const sellerInfo: EditSellerInfoBody = {
-            description,
-            personalWebsite,
-            certifications,
-            skills
-        };
-        res.status(201).json(sellerInfo);
     });
 
 }

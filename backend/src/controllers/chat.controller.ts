@@ -1,14 +1,14 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { HttpException } from '../exceptions';
 import { CustomRequest, UserModel } from '../interface';
-import { SearchModel } from '../interface/search.interface';
-import { MessageService } from '../services';
+import { SearchModel } from '../interface';
+import { ChatService } from '../services';
 import { CreateRoomBody } from '../validation';
 
 
-export class MessageController {
-    public messageService: MessageService = new MessageService();
+export class ChatsController {
+    public messageService: ChatService = new ChatService();
 
 
     // @desc       Get rooms of a user.
@@ -27,10 +27,7 @@ export class MessageController {
         const userId = (req.headers['user'] as UserModel)._id;
         const roomData = <CreateRoomBody>req.body;
 
-        if ((userId as any).toString() === roomData.buyer)
-            throw new HttpException(401, "sorry, invalied credential");
-
-        const createdRoom = await this.messageService.createChat(roomData);
+        const createdRoom = await this.messageService.createChat((userId as string), roomData);
         res.status(201).json(createdRoom);
     });
 

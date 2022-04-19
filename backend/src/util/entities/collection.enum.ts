@@ -8,5 +8,9 @@ export enum Coll {
     SELLER_INFO = 'sellerInfo',
     SERVICES = 'services',
     CHAT = 'chats',
-    MESSAGE = 'messages'
+    MESSAGE = 'messages',
+    ORDER = 'orders',
+    TRANSACTION = 'transactions',
+    SAVE_LIST = 'saveLists',
+    REVIEWS = "reviews"
 }
