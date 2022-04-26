@@ -8,15 +8,13 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production node backend/build/server.js",
-    "start:dev": "cross-env NODE_ENV=development ts-node-dev backend/src/server.ts",
+    "start": "cross-env NODE_ENV=production node build/server.js",
+    "start:dev": "cross-env NODE_ENV=development node build/server.js",
     "build": "tsc && tsc-alias",
     "build:start": "yarn build && yarn start",
-    "client": "yarn --cwd frontend start",
-    "dev": "concurrently \"yarn start:dev\" \"yarn client\""
+    "dev": "cross-env NODE_ENV=development ts-node-dev server.ts"
   },
   "dependencies": {
-    "axios": "^0.26.1",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.28.1",
     "colors": "^1.4.0",
@@ -36,8 +34,6 @@
     "nanoid": "^3.3.1",
     "nodemailer": "^6.7.3",
     "paypal-rest-sdk": "^1.8.1",
-    "react-cropper": "^2.1.8",
-    "react-router-bootstrap": "^0.26.1",
     "redis": "^4.0.6",
     "scrape-it": "^5.3.2",
     "socket.io": "^4.4.1",
@@ -56,7 +52,6 @@
     "@types/nodemailer": "^6.4.4",
     "@types/paypal-rest-sdk": "^1.7.6",
     "@types/socket.io": "^3.0.2",
-    "concurrently": "^7.0.0",
     "morgan": "^1.10.0",
     "ts-node": "^10.7.0",
     "ts-node-dev": "^1.1.8",

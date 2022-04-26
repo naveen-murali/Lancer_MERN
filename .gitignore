@@ -1,6 +1,5 @@
 # build folder for the project
 build/
-backend/build/
 
 # firebase config
 lancer-firebase.json
