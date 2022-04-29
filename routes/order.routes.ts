@@ -15,7 +15,7 @@ export class OrderRoutes implements Routes {
         const orders = this.path;
 
         const {
-            getAllOrders,
+            getOneUserOrders,
             cancelOrder,
             getOneOrder,
             takeRevision,
@@ -27,7 +27,7 @@ export class OrderRoutes implements Routes {
 
         this.router
             .route(`${orders}`)
-            .get(protect, checkRoles([Role.BUYER, Role.SELLER]), getAllOrders);
+            .get(protect, checkRoles([Role.BUYER, Role.SELLER]), getOneUserOrders);
        
         this.router
             .route(`${orders}/admin`)
@@ -43,19 +43,19 @@ export class OrderRoutes implements Routes {
 
         this.router
             .route(`${orders}/:id/complete`)
-            .patch(protect, checkRoles([Role.BUYER, Role.SELLER]), completeOrder);
+            .patch(protect, checkRoles([Role.BUYER]), completeOrder);
 
         this.router
             .route(`${orders}/:id/revision`)
-            .patch(protect, checkRoles([Role.BUYER, Role.SELLER]), takeRevision);
+            .patch(protect, checkRoles([Role.BUYER]), takeRevision);
 
         this.router
             .route(`${orders}/:id/cancel`)
-            .patch(protect, checkRoles([Role.BUYER, Role.SELLER]), cancelOrder);
+            .patch(protect, checkRoles([Role.BUYER]), cancelOrder);
 
         this.router
             .route(`${orders}/:id`)
-            .get(protect, checkRoles([Role.BUYER, Role.SELLER]), getOneOrder);
+            .get(protect, checkRoles([Role.BUYER]), getOneOrder);
     }
 
 }

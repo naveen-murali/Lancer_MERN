@@ -1,7 +1,7 @@
 import http, { Server } from 'http';
 import express, { Application, json, urlencoded } from 'express';
 import cors from 'cors';
-import morgan from 'morgan';
+import morgan from 'morgan';    
 import compression from 'compression';
 import { Mode } from './util';
 import { Routes } from './interface';

@@ -84,6 +84,9 @@ export class AuthService {
                 throw new HttpException(401, 'google account authentication failed');
             });
 
+        if (!data.getPayload())
+            throw new HttpException(401, "invalied credential");
+
         const name = data.getPayload()?.name;
         const email = data.getPayload()?.email;
         const image = data.getPayload()?.picture;
@@ -175,7 +178,7 @@ export class AuthService {
             });
 
         console.log(data, data.getPayload()?.picture);
-        
+
         const email = data.getPayload()?.email;
         const image = data.getPayload()?.picture;
         const googleId = data.getUserId();

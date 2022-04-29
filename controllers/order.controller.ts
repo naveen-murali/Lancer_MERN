@@ -8,14 +8,14 @@ export class OrderController {
     public orderService: OrderService = new OrderService();
 
 
-    // @desc        Get all the users orders
+    // @desc        Get all orders of the user
     // @rout        POST /orders
     // @acce        User[Buyer/Seller]
-    getAllOrders = asyncHandler(async (req: CustomRequest, res: Response) => {
+    getOneUserOrders = asyncHandler(async (req: CustomRequest, res: Response) => {
         const userId = req.headers['user']?._id as string;
         const query = <OrderSearchModel><unknown>req.query;
 
-        const orders = await this.orderService.getAllOrders(userId, query);
+        const orders = await this.orderService.getOneUserOrders(userId, query);
         res.json(orders);
     });
 

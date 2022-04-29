@@ -19,6 +19,8 @@ export class LancerRoutes implements Routes {
             getLancer,
             updateLancer,
             getLancersCounts,
+            getOneUserDetails,
+            getOneUserOrders
         } = this.lancerController;
 
         this.router
@@ -29,6 +31,14 @@ export class LancerRoutes implements Routes {
         this.router
             .route(`${lancer}/counts`)
             .get(protect, checkRoles([Role.ADMIN]), getLancersCounts);
+
+        this.router
+            .route(`${lancer}/users/:id`)
+            .get(protect, checkRoles([Role.ADMIN]), getOneUserDetails);
+        
+        this.router
+            .route(`${lancer}/users/:id/orders`)
+            .get(protect, checkRoles([Role.ADMIN]), getOneUserOrders);
     }
 
 }

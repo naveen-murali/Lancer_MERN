@@ -1,4 +1,4 @@
-# Lancer_MERN
+# Lancer
 A freelancers patform
 
 <br>

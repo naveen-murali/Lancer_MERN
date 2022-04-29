@@ -17,7 +17,7 @@ export class OrderService {
     private lancerService = new LancerService();
 
 
-    getAllOrders = async (userId: string, query: OrderSearchModel) => {
+    getOneUserOrders = async (userId: string, query: OrderSearchModel) => {
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
 
