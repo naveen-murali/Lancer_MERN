@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  redis-server:
+    container_name: redis-server
+    image: redis:alpine3.15
+    hostname: redis
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+
+  lancer:
+    build:
+      context: .
+      args:
+        - NODE_ENV=production
+    container_name: lancer-latest
+    image: naveenmurali/lancer:latest
+    env_file:
+      - ./.env
+    ports:
+      - 3000:3000

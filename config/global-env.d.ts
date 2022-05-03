@@ -20,5 +20,7 @@ namespace NodeJS {
 
         PAYPAL_CLIENT: string;
         PAYPAL_SECRET: string;
+
+        REDIS_URL: string;
     }
 }

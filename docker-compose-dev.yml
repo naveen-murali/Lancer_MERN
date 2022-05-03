@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  lancer:
+    build:
+      context: .
+      args:
+        - NODE_ENV=development
+    container_name: lancer-dev
+    image: lancer:dev
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./:/lancer
+      - /lancer/node_modules
+    command: yarn dev

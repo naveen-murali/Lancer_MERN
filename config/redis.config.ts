@@ -2,7 +2,9 @@ import { createClient, RedisClientType } from 'redis';
 
 export let redis: RedisClientType;
 export const connectRedis = async () => {
-    redis = createClient();
+    redis = createClient({
+        url: process.env.REDIS_URL
+    });
 
     redis.on('connect', () => {
         console.log(' [ REDIS ] - connecting...'.yellow.dim)

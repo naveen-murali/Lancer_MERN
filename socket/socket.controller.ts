@@ -46,6 +46,7 @@ export const validationSocketData = (socket: CustomSocket, validationMethod: any
 
 
 export const addUser = async (io: IO, userId: string, socketId: string) => {
+    console.log(`[event] - ${Events.CONNECTION}`.bgMagenta);
     try {
         await redis.SET(userId, socketId);
         await redis.SET(socketId, userId);
