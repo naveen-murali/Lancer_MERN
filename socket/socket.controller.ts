@@ -182,10 +182,8 @@ export const sendMessage = async (io: IO, socket: CustomSocket, message: Message
 
         // creating a message and saving it to the database and forwarding to the users.
         const createdMessage = await newMessage.save();
-
+        
         io.emit(`${Events.MESSAGE}/${message.chat}`, createdMessage);
-
-        chat.lastMessage = createdMessage;
         await chat.save();
 
         /* sending message notification */

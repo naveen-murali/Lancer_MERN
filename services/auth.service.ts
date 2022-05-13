@@ -201,7 +201,7 @@ export class AuthService {
     sendOtp = async (phone: string): Promise<boolean> | never => {
         try {
             await client.verify
-                .services(`${process.env.SERVICE_ID}`)
+                .services(`${process.env.TWILIO_SERVICE_ID}`)
                 .verifications.create({ to: `+91${phone}`, channel: "sms" });
 
             return true;
@@ -215,7 +215,7 @@ export class AuthService {
 
         try {
             const { status } = await client.verify
-                .services(`${process.env.SERVICE_ID}`)
+                .services(`${process.env.TWILIO_SERVICE_ID}`)
                 .verificationChecks.create({ to: `+91${phone}`, code: otp });
 
             if (status !== "approved")
