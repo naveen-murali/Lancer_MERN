@@ -9,31 +9,30 @@
 -   This project is containerized using docker.
 -   The project is deployed through AWS.
 
-<br>
 
 ##### Technologies Used:
 
-> -   <b>NodeJS</b> (v16.14.2)
-> -   <b>ExpressJS</b> (v4.17.3)
-> -   <b>Yarn</b> (v1.22.18)
-> -   <b>Typescript</b> (v4.6.2)
-> -   <b>Mongoose</b> (v6.2.7)
-> -   <b>Google</b> Auth Library (v7.14.0)
-> -   <b>Cloudinary</b> (v1.28.1)
-> -   <b>Socket.io</b> (v4.5.0)
-> -   <b>Redis</b>
->
+-   <b>NodeJS</b> (v16.14.2)
+-   <b>ExpressJS</b> (v4.17.3)
+-   <b>Yarn</b> (v1.22.18)
+-   <b>Typescript</b> (v4.6.2)
+-   <b>Mongoose</b> (v6.2.7)
+-   <b>Google</b> Auth Library (v7.14.0)
+-   <b>Cloudinary</b> (v1.28.1)
+-   <b>Socket.io</b> (v4.5.0)
+-   <b>Redis</b>
+
 
 ##### API:
 
-> -   <b>Twilio</b>
-> -   <b>Paypal</b>
-> -   <b>Google Auth </b>
+-   <b>Twilio</b>
+-   <b>Paypal</b>
+-   <b>Google Auth </b>
 
 ##### Hosting:
 
-> -   <b>AWS EC2</b>
-> -   <b>Nginx</b>
+-   <b>AWS EC2</b>
+-   <b>Nginx</b>
 
 <br>
 
@@ -42,7 +41,6 @@ Admin Panal: [`https://github.com/naveen-murali/lancer-admin-panel.git`](https:/
 
 ---
 
-<br>
 
 ## **Requirements**
 For running Lancer, you will only need [**Docker**](https://docs.docker.com/engine/install/) and [**Docker Compose**](https://docs.docker.com/compose/install/) or [**Nodejs**](https://nodejs.org/en/) (*make sure that the nodejs version is 16.14.2*) installed.
@@ -113,7 +111,6 @@ Running the application with docker
 
 ---
 
-<br>
 
 ## **API Documentation**
 
@@ -129,11 +126,6 @@ Running the application with docker
 | Uploads       | https://documenter.getpostman.com/view/15914089/UVsSNipu |
 | Users         | https://documenter.getpostman.com/view/15914089/UVsTphXM |
 
-
-
 ---
 
-<div style="text-align: center; margin-top:20px;">
-  <em>For more information contact me on:</em> <br>
-  <a href="mailto:naveenmurali1999@gmail.com">naveenmurali1999@gmail.com</a>
-</div>
+*For more information contact me on:* **naveenmurali1999@gmail.com**
