@@ -1,4 +1,4 @@
-import { SearchModel, ServiceImage } from './common.interface';
+import { SearchModel, ServiceImage } from "./common.interface";
 
 export interface ServiceSearchModal extends SearchModel {
     category: string;
@@ -11,8 +11,8 @@ export interface PackagesDetails {
     revision: number;
 }
 interface PackagesModel {
-    basic: PackagesDetails,
-    standard: PackagesDetails,
+    basic: PackagesDetails;
+    standard: PackagesDetails;
     premium: PackagesDetails;
 }
 export interface ServiceModel {

@@ -1,5 +1,4 @@
-import { Schema } from 'mongoose';
-
+import { Schema } from "mongoose";
 
 export const Image = new Schema(
     {
@@ -10,10 +9,10 @@ export const Image = new Schema(
         url: {
             type: String,
             required: false,
-        }
+        },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 
@@ -26,10 +25,10 @@ export const ServiceImage = new Schema(
         url: {
             type: String,
             required: true,
-        }
+        },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 
@@ -37,34 +36,34 @@ export const PaymentDetailsModel = new Schema(
     {
         commission: {
             type: Number,
-            required: true
+            required: true,
         },
         platform: {
             type: String,
-            required: true
+            required: true,
         },
         paymentId: {
             type: String,
-            required: true
+            required: true,
         },
         capturedId: {
             type: String,
-            required: true
+            required: true,
         },
         amount: {
             type: Number,
-            required: true
+            required: true,
         },
         createdAt: {
             type: String,
-            required: true
+            required: true,
         },
         updatedAt: {
             type: String,
-            required: true
+            required: true,
         },
     },
     {
-        _id: false
+        _id: false,
     }
 );

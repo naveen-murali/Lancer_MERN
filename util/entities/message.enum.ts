@@ -3,7 +3,7 @@ export enum MessageTypes {
     FILE = "file",
     NEGOTIATE = "negotiate",
     PACKEGE = "package",
-    NOTIFICATION = "notification"
+    NOTIFICATION = "notification",
 }
 
 export enum AcceptStatus {

@@ -5,10 +5,7 @@ export class BadRequestException extends HttpException {
     public message: string;
     public errors: unknown;
 
-    constructor(
-        errors: unknown = null,
-        message: string = "bad request exception"
-    ) {
+    constructor(errors: unknown = null, message: string = "bad request exception") {
         super(400, message, errors);
         this.status = 400;
         this.message = message;

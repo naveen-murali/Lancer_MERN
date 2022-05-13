@@ -1,5 +1,4 @@
 import { Role } from ".";
-import { UserModel } from '../interface';
 
 export class AuthResponse {
     public _id: string;
@@ -18,24 +17,24 @@ export class AuthResponse {
 
     constructor(user: any, token: string) {
         this._id = `${user._id}`;
-        this.name = user.name || '';
-        this.email = user.email || '';
-        this.phone = user.phone || '';
+        this.name = user.name || "";
+        this.email = user.email || "";
+        this.phone = user.phone || "";
         this.isEmailVarified = user.isEmailVarified;
         this.isPhoneVerified = user.isPhoneVerified;
 
         this.image = user.image || {
-            public_id: "", url: ""
+            public_id: "",
+            url: "",
         };
 
         this.role = user.role || [];
         this.wallet = user.wallet || 0;
         this.widrowWallet = user.widrowWallet || 0;
         this.referralId = user.referralId || "";
-        this.token = token || '';
+        this.token = token || "";
 
         if (this.role.includes(Role.SELLER))
             this.sellerInfo = user.sellerInfo;
     }
-
 }

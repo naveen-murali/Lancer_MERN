@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
     host: "gmail",
@@ -6,17 +6,16 @@ const transporter = nodemailer.createTransport({
     secure: false, // true for 465, false for other ports
     auth: {
         user: "naveenmurali1211@gmail.com",
-        pass: "nzhcuzsxgspetgxc"
+        pass: "nzhcuzsxgspetgxc",
     },
 });
 
-
 export const SEND_MAIL = async (/* to: string, mail: string */) => {
     transporter.sendMail({
-        from: "naveenmurali1211@gmail.com", 
-        to: "reshin1@gmail.com", 
-        subject: "Hello ✔", 
+        from: "naveenmurali1211@gmail.com",
+        to: "reshin1@gmail.com",
+        subject: "Hello ✔",
         text: "Hello world?",
-        html: "<b>Hello world?</b>"
+        html: "<b>Hello world?</b>",
     });
 };

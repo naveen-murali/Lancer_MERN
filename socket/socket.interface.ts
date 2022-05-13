@@ -1,6 +1,6 @@
-import { Socket } from 'socket.io';
-import { Role } from '../util';
-import { Events } from './socket.enum';
+import { Socket } from "socket.io";
+import { Role } from "../util";
+import { Events } from "./socket.enum";
 
 export interface ServerToClientEvents {
     [Events.MESSAGE]: (a: string) => void;

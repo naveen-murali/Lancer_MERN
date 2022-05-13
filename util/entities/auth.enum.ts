@@ -1,9 +1,9 @@
 export enum Role {
-    ADMIN = 'admin',
-    BUYER = 'buyer',
-    SELLER = 'seller'
+    ADMIN = "admin",
+    BUYER = "buyer",
+    SELLER = "seller",
 }
 
-export enum RefEnum{
-    LENGTH = 8
+export enum RefEnum {
+    LENGTH = 8,
 }

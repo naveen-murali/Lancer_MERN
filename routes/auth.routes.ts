@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { Router } from "express";
+import { Role } from "../util";
 import { Routes } from "../interface";
-import { checkRoles, protect, ValidateBody } from '../middleware';
-
-import { AuthController } from '../controllers';
+import { AuthController } from "../controllers";
+import { checkRoles, protect, ValidateBody } from "../middleware";
 import {
     SignupBodyVal,
     SendOtpBodyVal,
@@ -10,16 +10,17 @@ import {
     SigninGoogleBodyVal,
     SignupGooogleBodyVal,
     SigninAdminBodyVal,
-    PhoneVarificationBodyVal
-} from '../validation';
-import { Role } from '../util';
+    PhoneVarificationBodyVal,
+} from "../validation";
 
 export class AuthRoutes implements Routes {
     public path: string = "/auth";
     public router: Router = Router();
     public authController: AuthController = new AuthController();
 
-    constructor() { this.initializeRoutes(); }
+    constructor() {
+        this.initializeRoutes();
+    }
 
     initializeRoutes(): void {
         const auth = this.path;
@@ -31,9 +32,8 @@ export class AuthRoutes implements Routes {
             createUsingGoogle,
             signinAdmin,
             varifyPhone,
-            linkGoogle
+            linkGoogle,
         } = this.authController;
-
 
         this.router
             .route(`${auth}/users/signup`)
@@ -61,11 +61,20 @@ export class AuthRoutes implements Routes {
 
         this.router
             .route(`${auth}/users/:id/phone`)
-            .patch(protect, checkRoles([Role.BUYER]), ValidateBody(PhoneVarificationBodyVal.safeParse), varifyPhone);
+            .patch(
+                protect,
+                checkRoles([Role.BUYER]),
+                ValidateBody(PhoneVarificationBodyVal.safeParse),
+                varifyPhone
+            );
 
         this.router
             .route(`${auth}/users/:id/google`)
-            .patch(protect, checkRoles([Role.BUYER]), ValidateBody(SignupGooogleBodyVal.safeParse), linkGoogle);
+            .patch(
+                protect,
+                checkRoles([Role.BUYER]),
+                ValidateBody(SignupGooogleBodyVal.safeParse),
+                linkGoogle
+            );
     }
-
 }

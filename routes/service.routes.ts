@@ -1,16 +1,23 @@
-import { Router } from 'express';
-import { ServiceController } from '../controllers';
+import { Router } from "express";
+import { Role } from "../util";
 import { Routes } from "../interface";
-import { protect, checkRoles, ValidateBody } from '../middleware';
-import { Role } from '../util';
-import { AddReviewBodyVal, AddSaveListBodyVal, CreateSeviceBodyVal, EditSeviceBodyVal } from '../validation';
+import { ServiceController } from "../controllers";
+import { protect, checkRoles, ValidateBody } from "../middleware";
+import {
+    AddReviewBodyVal,
+    AddSaveListBodyVal,
+    CreateSeviceBodyVal,
+    EditSeviceBodyVal,
+} from "../validation";
 
 export class ServiceRoutes implements Routes {
     public path: string = "/services";
     public router: Router = Router();
     public serviceController: ServiceController = new ServiceController();
 
-    constructor() { this.initializeRoutes(); }
+    constructor() {
+        this.initializeRoutes();
+    }
 
     initializeRoutes(): void {
         const services = this.path;
@@ -30,13 +37,18 @@ export class ServiceRoutes implements Routes {
             setSaveList,
             deleteSaveList,
             addReviews,
-            getReviews
+            getReviews,
         } = this.serviceController;
 
         this.router
             .route(`${services}`)
             .get(getServices)
-            .post(protect, checkRoles([Role.SELLER]), ValidateBody(CreateSeviceBodyVal.safeParse), createService);
+            .post(
+                protect,
+                checkRoles([Role.SELLER]),
+                ValidateBody(CreateSeviceBodyVal.safeParse),
+                createService
+            );
 
         this.router
             .route(`${services}/users`)
@@ -53,7 +65,12 @@ export class ServiceRoutes implements Routes {
         this.router
             .route(`${services}/save-list`)
             .get(protect, checkRoles([Role.BUYER]), getSaveList)
-            .post(protect, checkRoles([Role.BUYER]), ValidateBody((AddSaveListBodyVal.safeParse)), setSaveList);
+            .post(
+                protect,
+                checkRoles([Role.BUYER]),
+                ValidateBody(AddSaveListBodyVal.safeParse),
+                setSaveList
+            );
 
         this.router
             .route(`${services}/save-list/:id`)
@@ -62,7 +79,12 @@ export class ServiceRoutes implements Routes {
         this.router
             .route(`${services}/:id/reviews`)
             .get(getReviews)
-            .post(protect, checkRoles([Role.BUYER]), ValidateBody(AddReviewBodyVal.safeParse), addReviews);
+            .post(
+                protect,
+                checkRoles([Role.BUYER]),
+                ValidateBody(AddReviewBodyVal.safeParse),
+                addReviews
+            );
 
         this.router
             .route(`${services}/:id/activate`)
@@ -83,7 +105,11 @@ export class ServiceRoutes implements Routes {
         this.router
             .route(`${services}/:id`)
             .get(getOneService)
-            .put(protect, checkRoles([Role.SELLER]), ValidateBody(EditSeviceBodyVal.safeParse), editService);
+            .put(
+                protect,
+                checkRoles([Role.SELLER]),
+                ValidateBody(EditSeviceBodyVal.safeParse),
+                editService
+            );
     }
-
 }

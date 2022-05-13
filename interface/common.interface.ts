@@ -1,6 +1,6 @@
-import { PaymentPlatform, ServicePackage } from '../util';
-import { ServiceModel } from './service.interface';
-import { UserModel } from './user.interface';
+import { PaymentPlatform, ServicePackage } from "../util";
+import { ServiceModel } from "./service.interface";
+import { UserModel } from "./user.interface";
 
 export interface Image {
     public_id?: string;

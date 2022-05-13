@@ -3,11 +3,7 @@ export class HttpException extends Error {
     public message: string;
     public errors: unknown;
 
-    constructor(
-        status: number,
-        message: string,
-        errors: unknown = false
-    ) {
+    constructor(status: number, message: string, errors: unknown = false) {
         super(message);
         this.status = status;
         this.message = message;
@@ -15,10 +11,6 @@ export class HttpException extends Error {
     }
 
     setError = (errors: unknown) => {
-        return errors
-            ? Array.isArray(errors)
-                ? errors
-                : [errors]
-            : [this.message];
+        return errors ? (Array.isArray(errors) ? errors : [errors]) : [this.message];
     };
 }

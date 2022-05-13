@@ -3,4 +3,4 @@ export interface LancerModel {
     wallet: number;
     commission: number;
     referralAmount: number;
-} 
+}

@@ -1,38 +1,34 @@
 import { Types } from "mongoose";
-import cloudinary from 'cloudinary';
-import { Coll } from '../util';
-import { SearchModel } from '../interface';
-import { NotFoundException } from '../exceptions';
-import { Category, SubCategory } from '../models';
+import cloudinary from "cloudinary";
+import { Coll } from "../util";
+import { SearchModel } from "../interface";
+import { NotFoundException } from "../exceptions";
+import { Category, SubCategory } from "../models";
 import {
     AddCategoryBody,
     AddSubCategoryBody,
     EditCategoryBody,
-    EditSubCategoryBody
-} from '../validation';
-
+    EditSubCategoryBody,
+} from "../validation";
 
 export class CategoryService {
     private Category = Category;
     private SubCategory = SubCategory;
 
-
     addCategory = async (body: AddCategoryBody, admin: string) => {
         const category = await this.Category.create({
             ...body,
-            admin
+            admin,
         });
         return category;
     };
 
-
     getAllCategory = async () => {
         return await this.Category.find({ isBlocked: false })
-            .select('-isBlocked -admin')
+            .select("-isBlocked -admin")
             .sort({ title: 1 })
             .exec();
     };
-
 
     getAllCategoryForAdmin = async (query: SearchModel) => {
         const pageSize = Number(query.pageSize) || 10;
@@ -40,21 +36,21 @@ export class CategoryService {
 
         const keyword = query.search
             ? {
-                $or: [
-                    {
-                        title: {
-                            $regex: query.search,
-                            $options: 'i'
-                        }
-                    },
-                    {
-                        description: {
-                            $regex: query.search,
-                            $options: 'i'
-                        }
-                    }
-                ]
-            }
+                  $or: [
+                      {
+                          title: {
+                              $regex: query.search,
+                              $options: "i",
+                          },
+                      },
+                      {
+                          description: {
+                              $regex: query.search,
+                              $options: "i",
+                          },
+                      },
+                  ],
+              }
             : {};
 
         const count = await this.Category.countDocuments({ ...keyword });
@@ -68,27 +64,24 @@ export class CategoryService {
             category,
             page,
             pageSize,
-            pages: Math.ceil(count / pageSize)
+            pages: Math.ceil(count / pageSize),
         };
     };
-
 
     addSubCategory = async (body: AddSubCategoryBody) => {
         if (await Category.exists({ _id: body.category })) {
             const subCat = await this.SubCategory.create({ ...body });
 
             return subCat;
-        }
-        else
-            throw new NotFoundException('category you provided is not found');
+        } else
+            throw new NotFoundException("category you provided is not found");
     };
-
 
     editSubCategory = async (subcategoryId: string, subcategoryData: EditSubCategoryBody) => {
         const subcategory = await this.SubCategory.findById(subcategoryId);
 
         if (!subcategory)
-            throw new NotFoundException('subcategory not found');
+            throw new NotFoundException("subcategory not found");
 
         subcategory.title = subcategoryData.title || subcategory.title;
         subcategory.description = subcategoryData.description || subcategory.description;
@@ -96,24 +89,22 @@ export class CategoryService {
         return await subcategory.save();
     };
 
-
     getOneSubCategory = async (subcategoryId: string) => {
         const subcategory = await this.SubCategory.findById(subcategoryId);
 
         if (!subcategory)
-            throw new NotFoundException('subcategory not found');
+            throw new NotFoundException("subcategory not found");
 
         return subcategory;
     };
-
 
     getCategorySubcategory = async (categoryId: string) => {
         return await this.Category.aggregate([
             {
                 $match: {
                     _id: new Types.ObjectId(categoryId),
-                    isBlocked: false
-                }
+                    isBlocked: false,
+                },
             },
             {
                 $lookup: {
@@ -123,39 +114,38 @@ export class CategoryService {
                         {
                             $match: {
                                 $expr: {
-                                    $eq: ["$category", "$$category"]
+                                    $eq: ["$category", "$$category"],
                                 },
-                                isBlocked: false
-                            }
+                                isBlocked: false,
+                            },
                         },
                         {
                             $project: {
                                 category: 0,
-                                isBlocked: 0
-                            }
+                                isBlocked: 0,
+                            },
                         },
                         {
                             $sort: {
-                                title: 1
-                            }
-                        }
+                                title: 1,
+                            },
+                        },
                     ],
-                    as: 'subcategory'
-                }
+                    as: "subcategory",
+                },
             },
             {
-                $unset: ['isBlocked', 'admin']
-            }
+                $unset: ["isBlocked", "admin"],
+            },
         ]).exec();
     };
-
 
     getCategorySubcategoryForAdmin = async (categoryId: string) => {
         return await this.Category.aggregate([
             {
                 $match: {
-                    _id: new Types.ObjectId(categoryId)
-                }
+                    _id: new Types.ObjectId(categoryId),
+                },
             },
             {
                 $lookup: {
@@ -165,28 +155,27 @@ export class CategoryService {
                         {
                             $match: {
                                 $expr: {
-                                    $eq: ["$category", "$$category"]
-                                }
-                            }
+                                    $eq: ["$category", "$$category"],
+                                },
+                            },
                         },
                         {
                             $sort: {
-                                _id: -1
-                            }
-                        }
+                                _id: -1,
+                            },
+                        },
                     ],
-                    as: 'subcategory'
-                }
-            }
+                    as: "subcategory",
+                },
+            },
         ]).exec();
     };
-
 
     editCategory = async (categoryId: string, categoryData: EditCategoryBody) => {
         const category = await this.Category.findById(categoryId);
 
         if (!category)
-            throw new NotFoundException('category not found');
+            throw new NotFoundException("category not found");
 
         if (categoryData.image && category.image && category.image.public_id)
             cloudinary.v2.uploader.destroy(category.image.public_id).catch();
@@ -198,12 +187,11 @@ export class CategoryService {
         return await category.save();
     };
 
-
     blockCategory = async (categoryId: string) => {
         const category = await this.Category.findById(categoryId);
 
         if (!category)
-            throw new NotFoundException('category not found');
+            throw new NotFoundException("category not found");
 
         category.isBlocked = true;
         await category.save();
@@ -211,12 +199,11 @@ export class CategoryService {
         return true;
     };
 
-
     unblockCategory = async (categoryId: string) => {
         const category = await this.Category.findById(categoryId);
 
         if (!category)
-            throw new NotFoundException('category not found');
+            throw new NotFoundException("category not found");
 
         category.isBlocked = false;
         await category.save();
@@ -224,12 +211,11 @@ export class CategoryService {
         return true;
     };
 
-
     blockSubCategory = async (subcategoryId: string) => {
         const subcategory = await this.SubCategory.findById(subcategoryId);
 
         if (!subcategory)
-            throw new NotFoundException('subcategory not found');
+            throw new NotFoundException("subcategory not found");
 
         subcategory.isBlocked = true;
         await subcategory.save();
@@ -237,17 +223,15 @@ export class CategoryService {
         return true;
     };
 
-
     unblockSubCategory = async (subcategoryId: string) => {
         const subcategory = await this.SubCategory.findById(subcategoryId);
 
         if (!subcategory)
-            throw new NotFoundException('subcategory not found');
+            throw new NotFoundException("subcategory not found");
 
         subcategory.isBlocked = false;
         await subcategory.save();
 
         return true;
     };
-
 }

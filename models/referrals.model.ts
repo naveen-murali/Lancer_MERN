@@ -1,23 +1,22 @@
-import { Schema, model, Document } from 'mongoose';
-import { ReferralsModel } from '../interface';
-import { Coll } from '../util';
-
+import { Schema, model, Document } from "mongoose";
+import { ReferralsModel } from "../interface";
+import { Coll } from "../util";
 
 const referralsSchema: Schema = new Schema(
     {
         user: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
         },
         amount: {
             type: Number,
-            required: true
-        }
+            required: true,
+        },
     },
     {
         _id: false,
-        timestamps: true
+        timestamps: true,
     }
 );
 
@@ -26,13 +25,13 @@ const referralSchema: Schema = new Schema(
         user: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
         },
-        referrals: [referralsSchema]
+        referrals: [referralsSchema],
     },
     {
         timestamps: true,
     }
 );
 
-export const Referrals = model<ReferralsModel & Document>('Referrals', referralSchema, Coll.REFERRAL);
+export const Referrals = model<ReferralsModel & Document>("Referrals",referralSchema,Coll.REFERRAL);

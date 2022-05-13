@@ -15,8 +15,8 @@ services:
       context: .
       args:
         - NODE_ENV=production
-    container_name: lancer-latest
-    image: naveenmurali/lancer:latest
+    container_name: lancer-v2
+    image: naveenmurali/lancer:v2
     env_file:
       - ./.env
     ports:

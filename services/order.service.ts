@@ -1,11 +1,23 @@
-import moment from 'moment';
-import { ChatService } from './chat.service';
-import { GetCountReturnModel, OrderSearchModel } from '../interface';
-import { LancerService } from './lancer.service';
-import { Order, User, Transaction, Message } from '../models';
-import { BadRequestException, HttpException, NotFoundException } from '../exceptions';
-import { CompletionLevel, OrderSearchType, OrderStatus, TransactionType, AcceptStatus, getWeek, getYear } from '../util';
-import { validateEnum } from '../validation/common.validation';
+import moment from "moment";
+import { ChatService } from "./chat.service";
+import { LancerService } from "./lancer.service";
+import { Order, User, Transaction, Message } from "../models";
+import { validateEnum } from "../validation/common.validation";
+import { GetCountReturnModel, OrderSearchModel } from "../interface";
+import {
+    HttpException,
+    NotFoundException,
+    BadRequestException,
+} from "../exceptions";
+import {
+    CompletionLevel,
+    OrderSearchType,
+    OrderStatus,
+    TransactionType,
+    AcceptStatus,
+    getWeek,
+    getYear,
+} from "../util";
 
 export class OrderService {
     private User = User;
@@ -16,28 +28,33 @@ export class OrderService {
     private chatService = new ChatService();
     private lancerService = new LancerService();
 
-
     getOneUserOrders = async (userId: string, query: OrderSearchModel) => {
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
 
-        if (query.type && (query.type !== OrderSearchType.SELLING && query.type !== OrderSearchType.BUYING))
-            throw new BadRequestException(`type should be ${OrderSearchType.SELLING} or ${OrderSearchType.BUYING}`);
+        if (
+            query.type &&
+            query.type !== OrderSearchType.SELLING &&
+            query.type !== OrderSearchType.BUYING
+        )
+            throw new BadRequestException(
+                `type should be ${OrderSearchType.SELLING} or ${OrderSearchType.BUYING}`
+            );
 
         const keyword = query.type
             ? query.type === OrderSearchType.SELLING
                 ? { seller: userId }
                 : { buyer: userId }
             : {
-                $or: [
-                    {
-                        buyer: { $eq: userId }
-                    },
-                    {
-                        seller: { $eq: userId }
-                    }
-                ],
-            };
+                  $or: [
+                      {
+                          buyer: { $eq: userId },
+                      },
+                      {
+                          seller: { $eq: userId },
+                      },
+                  ],
+              };
 
         const count = await this.Order.countDocuments({ ...keyword });
         const orders = await this.Order.find({ ...keyword })
@@ -50,10 +67,9 @@ export class OrderService {
             orders,
             page,
             pageSize,
-            pages: Math.ceil(count / pageSize)
+            pages: Math.ceil(count / pageSize),
         };
     };
-
 
     completeOrder = async (userId: string, orderId: string) => {
         const order = await this.getOneOrder(userId, orderId);
@@ -73,18 +89,17 @@ export class OrderService {
                 throw new BadRequestException("seller did not completed the order");
 
             const lancer = await this.lancerService.getLancer();
-            if (!lancer)
-                throw new HttpException(500, "failed to complete the order");
+            if (!lancer) throw new HttpException(500, "failed to complete the order");
 
             order.completionLevel.buyer = CompletionLevel.COMPLETED;
             order.status = OrderStatus.COMPLETED;
-            const sellerPrice = order.price - (order.price * lancer.commission / 100);
+            const sellerPrice = order.price - (order.price * lancer.commission) / 100;
 
             await Promise.all([
                 order.save(),
                 this.User.findByIdAndUpdate(order.seller, {
-                    $inc: { wallet: +sellerPrice }
-                }).exec()
+                    $inc: { wallet: +sellerPrice },
+                }).exec(),
             ]);
 
             const completeAt = moment(order.updatedAt).format("MMMM Do, YYYY");
@@ -96,7 +111,6 @@ export class OrderService {
 
         throw new HttpException(401, "invalied credential");
     };
-
 
     takeRevision = async (userId: string, orderId: string) => {
         const order = await this.getOneOrder(userId, orderId);
@@ -123,7 +137,6 @@ export class OrderService {
         return true;
     };
 
-
     cancelOrder = async (userId: string, orderId: string) => {
         const order = await this.getOneOrder(userId, orderId);
 
@@ -140,13 +153,14 @@ export class OrderService {
             this.Message.findOneAndUpdate(
                 {
                     chat: order.chat,
-                    acceptStatus: AcceptStatus.ACCEPTED
+                    acceptStatus: AcceptStatus.ACCEPTED,
                 },
                 {
                     $set: {
-                        acceptStatus: AcceptStatus.REJECTED
-                    }
-                })
+                        acceptStatus: AcceptStatus.REJECTED,
+                    },
+                }
+            ),
         ]);
 
         const cancelledBy = order.buyer.toString() === userId.toString() ? "buyer" : "seller";
@@ -162,33 +176,30 @@ export class OrderService {
                 type: TransactionType.REFUND,
                 price: order.price,
                 order: order._id,
-                orderPaymentDetails: order.paymentDetails
-            })
+                orderPaymentDetails: order.paymentDetails,
+            }),
         ]);
 
         return true;
     };
-
 
     getOneOrder = async (userId: string, orderId: string) => {
         const order = await this.Order.findOne({
             _id: orderId,
             $or: [
                 {
-                    buyer: { $eq: userId }
+                    buyer: { $eq: userId },
                 },
                 {
-                    seller: { $eq: userId }
-                }
+                    seller: { $eq: userId },
+                },
             ],
         });
 
-        if (!order)
-            throw new NotFoundException("order not found");
+        if (!order) throw new NotFoundException("order not found");
 
         return order;
     };
-
 
     getAllOrdersForAdmin = async (query: OrderSearchModel) => {
         validateEnum(OrderStatus, query.status);
@@ -196,8 +207,7 @@ export class OrderService {
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
 
-        const keyword = query.status
-            ? { status: query.status } : {};
+        const keyword = query.status ? { status: query.status } : {};
 
         const count = await this.Order.countDocuments({ ...keyword });
         const orders = await this.Order.find({ ...keyword })
@@ -211,18 +221,17 @@ export class OrderService {
             orders,
             page,
             pageSize,
-            pages: Math.ceil(count / pageSize)
+            pages: Math.ceil(count / pageSize),
         };
     };
-
 
     getWeeklyOrders = async () => {
         const week = getWeek();
 
         const reports = await this.getCount(week);
-        reports.sort((a, b) => a.index - b.index );
+        reports.sort((a, b) => a.index - b.index);
 
-        const formatedReports = reports.map(report => {
+        const formatedReports = reports.map((report) => {
             return {
                 ...report,
                 date: moment(report.date).format("dddd"),
@@ -232,14 +241,13 @@ export class OrderService {
         return formatedReports;
     };
 
-
     getMonthlyOrders = async () => {
         const years = getYear();
 
         const reports = await this.getCount(years);
-        reports.sort((a, b) => a.index - b.index );
+        reports.sort((a, b) => a.index - b.index);
 
-        const formatedReports = reports.map(report => {
+        const formatedReports = reports.map((report) => {
             return {
                 ...report,
                 date: moment(report.date).format("MMM, YYYY"),
@@ -249,8 +257,7 @@ export class OrderService {
         return formatedReports;
     };
 
-
-    getCount = (datas: { from: Date; to: Date; }[]) => {
+    getCount = (datas: { from: Date; to: Date }[]) => {
         return new Promise<GetCountReturnModel[]>(async (resolve, reject) => {
             const result: GetCountReturnModel[] = [];
 
@@ -260,30 +267,29 @@ export class OrderService {
                         Order.countDocuments({
                             createdAt: {
                                 $gte: data.from,
-                                $lte: data.to
+                                $lte: data.to,
                             },
-                            status: OrderStatus.COMPLETED
+                            status: OrderStatus.COMPLETED,
                         }),
                         Order.countDocuments({
                             createdAt: {
                                 $gte: data.from,
-                                $lte: data.to
+                                $lte: data.to,
                             },
-                            status: OrderStatus.ONGOING
+                            status: OrderStatus.ONGOING,
                         }),
                         Order.countDocuments({
                             createdAt: {
                                 $gte: data.from,
-                                $lte: data.to
+                                $lte: data.to,
                             },
-                            status: OrderStatus.CANCELLED
+                            status: OrderStatus.CANCELLED,
                         }),
                     ]);
 
                     result.push({ index, date: data.from, completed, ongoing, cancelled });
                     if (result.length === datas.length)
                         resolve(result);
-
                 } catch (error) {
                     console.log(error);
 
@@ -292,5 +298,4 @@ export class OrderService {
             });
         });
     };
-
 }

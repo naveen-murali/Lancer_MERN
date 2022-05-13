@@ -1,20 +1,24 @@
-import { Schema, model, Document, CallbackWithoutResultAndOptionalError } from 'mongoose';
-import { hash, genSalt, compare } from 'bcrypt';
-import { Coll, Role } from '../util';
-import { AdminModel } from '../interface';
-import { Image } from './common.schema';
+import {
+    Schema,
+    model,
+    Document,
+    CallbackWithoutResultAndOptionalError,
+} from "mongoose";
+import { hash, genSalt, compare } from "bcrypt";
+import { Coll, Role } from "../util";
+import { AdminModel } from "../interface";
+import { Image } from "./common.schema";
 
-
-const adminSchema: Schema = new Schema(
+const AdminSchema: Schema = new Schema(
     {
         name: {
             type: String,
-            required: true
+            required: true,
         },
         email: {
             type: String,
             required: true,
-            unique: true
+            unique: true,
         },
         password: {
             type: String,
@@ -22,12 +26,12 @@ const adminSchema: Schema = new Schema(
         },
         image: {
             type: Image,
-            required: false
+            required: false,
         },
         role: {
             type: Array,
             required: true,
-            default: [Role.ADMIN]
+            default: [Role.ADMIN],
         },
     },
     {
@@ -35,16 +39,20 @@ const adminSchema: Schema = new Schema(
     }
 );
 
-adminSchema.methods.matchPassword = async function matchPassword(enteredPassword: string) {
-    return await compare(enteredPassword, this.password);
-};
+AdminSchema.methods.matchPassword =
+    async function matchPassword(enteredPassword: string) {
+        return await compare(enteredPassword, this.password);
+    };
 
-adminSchema.pre('save', async function (next: CallbackWithoutResultAndOptionalError) {
-    if (!this.isModified('password'))
-        next();
+AdminSchema.pre(
+    "save",
+    async function (next: CallbackWithoutResultAndOptionalError) {
+        if (!this.isModified("password"))
+            next();
 
-    let salt = await genSalt(10);
-    this.password = await hash(this.password, salt);
-});
+        let salt = await genSalt(10);
+        this.password = await hash(this.password, salt);
+    }
+);
 
-export const Admin = model<AdminModel & Document>('Admin', adminSchema, Coll.ADMIN);
+export const Admin = model<AdminModel & Document>("Admin", AdminSchema, Coll.ADMIN);

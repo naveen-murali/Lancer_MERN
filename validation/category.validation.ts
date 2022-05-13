@@ -1,6 +1,7 @@
-import { z } from 'zod';
-import { Image, Title, Description } from './common.validation';
+import { z } from "zod";
+import { Image, Title, Description } from "./common.validation";
 
+// add categoru body validation
 export const AddCategoryBodyVal = z.object({
     title: Title,
     description: Description.optional(),
@@ -8,7 +9,7 @@ export const AddCategoryBodyVal = z.object({
 });
 export type AddCategoryBody = z.infer<typeof AddCategoryBodyVal>;
 
-
+// edit category body validation
 export const EditCategoryBodyVal = z.object({
     title: Title.optional(),
     description: Description.optional(),

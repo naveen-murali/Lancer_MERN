@@ -1,5 +1,4 @@
 import { Types } from "mongoose";
-import { Image } from './common.interface';
 
 interface ReviewsModel {
     user: string | Types.ObjectId;
@@ -8,7 +7,7 @@ interface ReviewsModel {
 }
 export interface ReviewModel {
     _id: string;
-    service: string,
+    service: string;
     reviews: ReviewsModel[];
     createdAt: Date;
     updatedAt: Date;

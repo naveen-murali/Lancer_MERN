@@ -1,5 +1,5 @@
-import { AcceptStatus, MessageTypes } from '../util';
-import { ServiceImage } from './common.interface';
+import { AcceptStatus, MessageTypes } from "../util";
+import { ServiceImage } from "./common.interface";
 
 export interface MessageModel {
     _id: string;

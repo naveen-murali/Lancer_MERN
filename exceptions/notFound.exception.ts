@@ -5,10 +5,7 @@ export class NotFoundException extends HttpException {
     public message: string;
     public errors: unknown;
 
-    constructor(
-        errors: unknown = null,
-        message: string = "Not found exception",
-    ) {
+    constructor(errors: unknown = null, message: string = "Not found exception") {
         super(404, message, errors);
         this.status = 404;
         this.message = message;

@@ -1,9 +1,9 @@
-import { Types } from 'mongoose';
-import { BadRequestException, NotFoundException } from '../exceptions';
-import { OrderSearchModel } from '../interface';
-import { Lancer, User, Order, Service, Chat } from '../models';
-import { Coll, OrderSearchType } from '../util';
-import { UpdateLancerBody } from '../validation';
+import { Types } from "mongoose";
+import { BadRequestException, NotFoundException } from "../exceptions";
+import { OrderSearchModel } from "../interface";
+import { Lancer, User, Order, Service, Chat } from "../models";
+import { Coll, OrderSearchType } from "../util";
+import { UpdateLancerBody } from "../validation";
 
 export class LancerService {
     private Lancer = Lancer;
@@ -12,11 +12,9 @@ export class LancerService {
     private Service = Service;
     private Chat = Chat;
 
-
     getLancer = async () => {
         return await this.Lancer.findOne();
     };
-
 
     updateLancer = async (amount: UpdateLancerBody) => {
         const lancer = await this.Lancer.findOne();
@@ -30,24 +28,22 @@ export class LancerService {
         return true;
     };
 
-
     getLancersCounts = async () => {
         const [totalUsers, totalOrders, totalService, totalChat] = await Promise.all([
             this.User.countDocuments(),
             this.Order.countDocuments(),
             this.Service.countDocuments(),
-            this.Chat.countDocuments()
+            this.Chat.countDocuments(),
         ]);
 
         return { totalUsers, totalOrders, totalService, totalChat };
     };
 
-
     getOneUserDetails = async (userId: string) => {
         const user = await this.User.aggregate([
             {
                 $match: {
-                    _id: new Types.ObjectId(userId)
+                    _id: new Types.ObjectId(userId),
                 },
             },
             {
@@ -58,44 +54,44 @@ export class LancerService {
                         {
                             $match: {
                                 $expr: {
-                                    $eq: ["$$user", "$user"]
-                                }
-                            }
+                                    $eq: ["$$user", "$user"],
+                                },
+                            },
                         },
                         {
                             $project: {
                                 _id: 0,
                                 count: {
-                                    $size: "$saveList"
-                                }
-                            }
-                        }
+                                    $size: "$saveList",
+                                },
+                            },
+                        },
                     ],
-                    as: "saveList"
-                }
+                    as: "saveList",
+                },
             },
             {
                 $unwind: {
                     path: "$saveList",
-                    preserveNullAndEmptyArrays: true
-                }
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             {
                 $addFields: {
                     saveListCount: {
                         $cond: [
                             {
-                                $gt: ["$saveList", null]
+                                $gt: ["$saveList", null],
                             },
                             "$saveList.count",
-                            0
-                        ]
-                    }
-                }
+                            0,
+                        ],
+                    },
+                },
             },
             {
-                $unset: "saveList"
-            }
+                $unset: "saveList",
+            },
         ]);
 
         if (!user[0])
@@ -104,28 +100,33 @@ export class LancerService {
         return user[0];
     };
 
-
     getOneUserOrders = async (userId: string, query: OrderSearchModel) => {
         const pageSize = Number(query.pageSize) || 10;
         const page = Number(query.page) || 1;
 
-        if (query.type && (query.type !== OrderSearchType.SELLING && query.type !== OrderSearchType.BUYING))
-            throw new BadRequestException(`type should be ${OrderSearchType.SELLING} or ${OrderSearchType.BUYING}`);
+        if (
+            query.type &&
+            query.type !== OrderSearchType.SELLING &&
+            query.type !== OrderSearchType.BUYING
+        )
+            throw new BadRequestException(
+                `type should be ${OrderSearchType.SELLING} or ${OrderSearchType.BUYING}`
+            );
 
         const keyword = query.type
             ? query.type === OrderSearchType.SELLING
                 ? { seller: userId }
                 : { buyer: userId }
             : {
-                $or: [
-                    {
-                        buyer: { $eq: userId }
-                    },
-                    {
-                        seller: { $eq: userId }
-                    }
-                ],
-            };
+                  $or: [
+                      {
+                          buyer: { $eq: userId },
+                      },
+                      {
+                          seller: { $eq: userId },
+                      },
+                  ],
+              };
 
         const count = await this.Order.countDocuments({ ...keyword });
         const orders = await this.Order.find({ ...keyword })
@@ -138,16 +139,16 @@ export class LancerService {
             orders,
             page,
             pageSize,
-            pages: Math.ceil(count / pageSize)
+            pages: Math.ceil(count / pageSize),
         };
     };
 
-
-
     reduceAmountFromWallet = async (amount: number) => {
-        return await this.Lancer.findOneAndUpdate({}, {
-            $inc: { wallet: -amount }
-        });
+        return await this.Lancer.findOneAndUpdate(
+            {},
+            {
+                $inc: { wallet: -amount },
+            }
+        );
     };
-
 }

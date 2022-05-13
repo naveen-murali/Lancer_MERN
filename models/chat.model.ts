@@ -1,24 +1,24 @@
-import { Schema, model, Document } from 'mongoose';
-import { Coll } from '../util';
-import { ChatModel } from '../interface';
-import { packageDetailsSchema } from './service.model';
+import { Schema, model, Document } from "mongoose";
+import { Coll } from "../util";
+import { ChatModel } from "../interface";
+import { packageDetailsSchema } from "./service.model";
 
 const orderSchema = new Schema(
     {
         buyer: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
         },
         seller: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
         },
         service: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "Service"
+            ref: "Service",
         },
         package: {
             type: String,
@@ -26,59 +26,65 @@ const orderSchema = new Schema(
         },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 const ChatSchema = new Schema(
     {
         members: {
-            type: [{
-                type: Schema.Types.ObjectId,
-                required: false,
-                ref: "User",
-            }],
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    required: false,
+                    ref: "User",
+                },
+            ],
             length: 2,
             required: true,
         },
         order: {
             type: orderSchema,
-            required: true
+            required: true,
         },
         package: {
             type: packageDetailsSchema,
-            required: true
+            required: true,
         },
         isOrdered: {
             type: Boolean,
             required: true,
-            default: false
+            default: false,
         },
         isNegotiated: {
             type: Boolean,
             required: true,
-            default: false
+            default: false,
         },
         negotiatedPrice: {
             type: Number,
-            default: 0
+            default: 0,
         },
         negotiatedRevision: {
             type: Number,
-            default: 0
+            default: 0,
         },
         negotiatedDeliveryTime: {
             type: Number,
-            default: 0
+            default: 0,
         },
         isBlocked: {
             type: Boolean,
             required: true,
-            default: false
-        }
+            default: false,
+        },
+        lastMessage: {
+            type: Object,
+            required: false,
+        },
     },
     {
         timestamps: true,
     }
 );
 
-export const Chat = model<ChatModel & Document>('Chat', ChatSchema, Coll.CHAT);
+export const Chat = model<ChatModel & Document>("Chat", ChatSchema, Coll.CHAT);

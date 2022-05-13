@@ -1,31 +1,31 @@
-import { Schema, model } from 'mongoose';
-import { CategoryModel } from '../interface';
-import { Coll } from '../util';
-import { Image } from './common.schema';
+import { Schema, model } from "mongoose";
+import { Coll } from "../util";
+import { Image } from "./common.schema";
+import { CategoryModel } from "../interface";
 
-const categorySchema = new Schema({
+const CategorySchema = new Schema({
     admin: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "Admin"
+        ref: "Admin",
     },
     title: {
         type: String,
-        required: true
+        required: true,
     },
     description: {
         type: String,
-        required: false
+        required: false,
     },
     image: {
         type: Image,
-        required: true
+        required: true,
     },
     isBlocked: {
         type: Boolean,
         required: true,
-        default: false
-    }
+        default: false,
+    },
 });
 
-export const Category = model<CategoryModel & Document>('Category', categorySchema, Coll.CATEGORY);
+export const Category = model<CategoryModel & Document>("Category", CategorySchema, Coll.CATEGORY);

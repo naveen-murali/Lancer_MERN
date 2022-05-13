@@ -1,30 +1,36 @@
-import { Router } from 'express';
-import { UserController } from '../controllers';
+import { Router } from "express";
+import { Role } from "../util";
 import { Routes } from "../interface";
-import { protect, checkRoles, ValidateBody } from '../middleware';
-import { Role } from '../util';
-import { AddSellerInfoBodyVal, EditSellerInfoBodyVal, EditUserBodyVal } from '../validation';
+import { UserController } from "../controllers";
+import { protect, checkRoles, ValidateBody } from "../middleware";
+import {
+    AddSellerInfoBodyVal,
+    EditSellerInfoBodyVal,
+    EditUserBodyVal
+} from "../validation";
 
 export class UserRoutes implements Routes {
     public path: string = "/users";
     public router: Router = Router();
     public userController: UserController = new UserController();
 
-    constructor() { this.initializeRoutes(); }
+    constructor() {
+        this.initializeRoutes();
+    }
 
     initializeRoutes(): void {
         const users = this.path;
         const {
-            getAllUsers,
-            getUserById,
-            addSellerInfo,
             editUser,
             blockUser,
             unblockUser,
+            getAllUsers,
+            getUserById,
+            addSellerInfo,
             getSellerInfo,
             editSellerInfo,
             getUsersEarnings,
-            getUsersReferrals
+            getUsersReferrals,
         } = this.userController;
 
         this.router
@@ -42,8 +48,18 @@ export class UserRoutes implements Routes {
         this.router
             .route(`${users}/:id/sellers`)
             .get(getSellerInfo)
-            .post(protect, checkRoles([Role.BUYER]), ValidateBody(AddSellerInfoBodyVal.safeParse), addSellerInfo)
-            .put(protect, checkRoles([Role.SELLER]), ValidateBody(EditSellerInfoBodyVal.safeParse), editSellerInfo);
+            .post(
+                protect,
+                checkRoles([Role.BUYER]),
+                ValidateBody(AddSellerInfoBodyVal.safeParse),
+                addSellerInfo
+            )
+            .put(
+                protect,
+                checkRoles([Role.SELLER]),
+                ValidateBody(EditSellerInfoBodyVal.safeParse),
+                editSellerInfo
+            );
 
         this.router
             .route(`${users}/:id/block`)
@@ -56,7 +72,11 @@ export class UserRoutes implements Routes {
         this.router
             .route(`${users}/:id`)
             .get(protect, checkRoles([Role.BUYER]), getUserById)
-            .put(protect, checkRoles([Role.BUYER, Role.SELLER]), ValidateBody(EditUserBodyVal.safeParse), editUser);
+            .put(
+                protect,
+                checkRoles([Role.BUYER, Role.SELLER]),
+                ValidateBody(EditUserBodyVal.safeParse),
+                editUser
+            );
     }
-
 }

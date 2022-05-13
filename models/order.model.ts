@@ -1,24 +1,23 @@
-import { Schema, model, Document } from 'mongoose';
-import { OrderModel } from '../interface';
-import { Coll, CompletionLevel, OrderStatus } from '../util';
-import { PaymentDetailsModel } from './common.schema';
-
+import { Schema, model, Document } from "mongoose";
+import { OrderModel } from "../interface";
+import { Coll, CompletionLevel, OrderStatus } from "../util";
+import { PaymentDetailsModel } from "./common.schema";
 
 const CompletionLevelModel = new Schema(
     {
         seller: {
             type: String,
             required: true,
-            default: CompletionLevel.ONGOING
+            default: CompletionLevel.ONGOING,
         },
         buyer: {
             type: String,
             required: true,
-            default: CompletionLevel.ONGOING
+            default: CompletionLevel.ONGOING,
         },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 
@@ -32,17 +31,17 @@ export const OrdersSchema = new Schema(
         buyer: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
         },
         seller: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
         },
         service: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "Service"
+            ref: "Service",
         },
         package: {
             type: String,
@@ -51,46 +50,46 @@ export const OrdersSchema = new Schema(
         isNegotiated: {
             type: Boolean,
             required: true,
-            default: false
+            default: false,
         },
         price: {
             type: Number,
-            required: true
+            required: true,
         },
         deliveryTime: {
             type: Number,
-            required: true
+            required: true,
         },
         revision: {
             type: Number,
-            required: true
+            required: true,
         },
         remainingRevision: {
             type: Number,
-            required: true
+            required: true,
         },
         status: {
             type: String,
             required: true,
-            default: OrderStatus.ONGOING
+            default: OrderStatus.ONGOING,
         },
         completionLevel: {
             type: CompletionLevelModel,
             required: true,
-            default: {}
+            default: {},
         },
         isPaied: {
             type: Boolean,
             required: true,
-            default: false
+            default: false,
         },
         paymentDetails: {
             type: PaymentDetailsModel,
-            required: true
-        }
+            required: true,
+        },
     },
     {
-        timestamps: true
+        timestamps: true,
     }
 );
 

@@ -1,24 +1,24 @@
-import { Schema, model, Document } from 'mongoose';
-import { SellerInfoModel } from '../interface';
-import { Coll } from '../util';
+import { Schema, model, Document } from "mongoose";
+import { SellerInfoModel } from "../interface";
+import { Coll } from "../util";
 
 const certificationsSchema = new Schema(
     {
         title: {
             type: String,
-            required: true
+            required: true,
         },
         certifiedBy: {
             type: String,
-            required: true
+            required: true,
         },
         year: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 
@@ -26,15 +26,15 @@ const skillsSchema = new Schema(
     {
         title: {
             type: String,
-            required: true
+            required: true,
         },
         level: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 
@@ -44,33 +44,37 @@ export const sellerInfoSchema: Schema = new Schema(
             type: Schema.Types.ObjectId,
             required: true,
             ref: "User",
-            unique: true
+            unique: true,
         },
         description: {
             type: String,
-            required: true
+            required: true,
         },
         personalWebsite: {
             type: String,
-            required: false
+            required: false,
         },
         sellerEarning: {
             type: Number,
             required: true,
-            default: 0
+            default: 0,
         },
         certifications: {
             type: [certificationsSchema],
-            required: false
+            required: false,
         },
         skills: {
             type: [skillsSchema],
-            required: true
-        }
+            required: true,
+        },
     },
     {
         timestamps: true,
     }
 );
 
-export const SellerInfo = model<SellerInfoModel & Document>('SellerInfo', sellerInfoSchema, Coll.SELLER_INFO);
+export const SellerInfo = model<SellerInfoModel & Document>(
+    "SellerInfo",
+    sellerInfoSchema,
+    Coll.SELLER_INFO
+);

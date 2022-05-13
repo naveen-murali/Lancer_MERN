@@ -1,17 +1,23 @@
-import { Router } from 'express';
-import { Role } from '../util';
+import { Router } from "express";
+import { Role } from "../util";
 import { Routes } from "../interface";
-import { CategoryController } from '../controllers';
-import { AddCategoryBodyVal, AddSubCategoryBodyVal, EditCategoryBodyVal, EditSubCategoryBodyVal } from '../validation';
-import { protect, checkRoles, ValidateBody } from '../middleware';
-
+import { CategoryController } from "../controllers";
+import {
+    AddCategoryBodyVal,
+    AddSubCategoryBodyVal,
+    EditCategoryBodyVal,
+    EditSubCategoryBodyVal,
+} from "../validation";
+import { protect, checkRoles, ValidateBody } from "../middleware";
 
 export class CategoryRoutes implements Routes {
     public path: string = "/category";
     public router: Router = Router();
     public categoryController: CategoryController = new CategoryController();
 
-    constructor() { this.initializeRoutes(); }
+    constructor() {
+        this.initializeRoutes();
+    }
 
     initializeRoutes(): void {
         const category = this.path;
@@ -28,14 +34,18 @@ export class CategoryRoutes implements Routes {
             unblockCategory,
             blockSubCategory,
             unblockSubCategory,
-            getCategorySubcategoryForAdmin
+            getCategorySubcategoryForAdmin,
         } = this.categoryController;
-
 
         this.router
             .route(`${category}`)
             .get(getAllCategory)
-            .post(protect, checkRoles([Role.ADMIN]), ValidateBody(AddCategoryBodyVal.safeParse), addCategory);
+            .post(
+                protect,
+                checkRoles([Role.ADMIN]),
+                ValidateBody(AddCategoryBodyVal.safeParse),
+                addCategory
+            );
 
         this.router
             .route(`${category}/admin`)
@@ -43,12 +53,22 @@ export class CategoryRoutes implements Routes {
 
         this.router
             .route(`${category}/subcategory`)
-            .post(protect, checkRoles([Role.ADMIN]), ValidateBody(AddSubCategoryBodyVal.safeParse), addSubCategory);
+            .post(
+                protect,
+                checkRoles([Role.ADMIN]),
+                ValidateBody(AddSubCategoryBodyVal.safeParse),
+                addSubCategory
+            );
 
         this.router
             .route(`${category}/subcategory/:id`)
             .get(protect, checkRoles([Role.ADMIN]), getOneSubCategory)
-            .put(protect, checkRoles([Role.ADMIN]), ValidateBody(EditSubCategoryBodyVal.safeParse), editSubCategory);
+            .put(
+                protect,
+                checkRoles([Role.ADMIN]),
+                ValidateBody(EditSubCategoryBodyVal.safeParse),
+                editSubCategory
+            );
 
         this.router
             .route(`${category}/block/:id`)
@@ -73,6 +93,11 @@ export class CategoryRoutes implements Routes {
         this.router
             .route(`${category}/:id`)
             .get(getCategorySubcategory)
-            .put(protect, checkRoles([Role.ADMIN]), ValidateBody(EditCategoryBodyVal.safeParse), editCategory);
+            .put(
+                protect,
+                checkRoles([Role.ADMIN]),
+                ValidateBody(EditCategoryBodyVal.safeParse),
+                editCategory
+            );
     }
 }

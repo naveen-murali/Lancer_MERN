@@ -1,11 +1,21 @@
-import { paypal } from '../config';
-import { LancerService } from './lancer.service';
-import { UserService } from './users.service';
-import { Chat, Transaction, User } from '../models';
-import { CreateWithdrawalRequestBody, validateEnum } from '../validation';
-import { OrderModel, TransactionSearchModel, UserModel } from '../interface';
-import { BadRequestException, HttpException, NotFoundException } from '../exceptions';
-import { inrToUsdRate, PaymentPlatform, PaypalRefundStatus, TransactionStatus, TransactionType } from '../util';
+import { paypal } from "../config";
+import { UserService } from "./users.service";
+import { LancerService } from "./lancer.service";
+import { Chat, Transaction, User } from "../models";
+import { CreateWithdrawalRequestBody, validateEnum } from "../validation";
+import { OrderModel, TransactionSearchModel, UserModel } from "../interface";
+import {
+    HttpException,
+    NotFoundException,
+    BadRequestException,
+} from "../exceptions";
+import {
+    inrToUsdRate,
+    PaymentPlatform,
+    PaypalRefundStatus,
+    TransactionStatus,
+    TransactionType,
+} from "../util";
 
 export class TransactionService {
     private Transaction = Transaction;
@@ -24,11 +34,10 @@ export class TransactionService {
 
         const keyword = query.type
             ? {
-                type: query.type || { $exists: true },
-                status: query.status || { $exists: true }
-            }
+                  type: query.type || { $exists: true },
+                  status: query.status || { $exists: true },
+              }
             : {};
-
 
         const [count, transactions] = await Promise.all([
             this.Transaction.countDocuments({ ...keyword }).exec(),
@@ -36,7 +45,7 @@ export class TransactionService {
                 .sort(query.sort || { _id: 1 })
                 .limit(pageSize)
                 .skip((page - 1) * pageSize)
-                .exec()
+                .exec(),
         ]);
 
         return {
@@ -45,10 +54,9 @@ export class TransactionService {
             transactions,
             page,
             pageSize,
-            pages: Math.ceil(count / pageSize)
+            pages: Math.ceil(count / pageSize),
         };
     };
-
 
     getUserTransactions = async (userId: string, query: TransactionSearchModel) => {
         const pageSize = Number(query.pageSize) || 10;
@@ -59,12 +67,11 @@ export class TransactionService {
 
         const keyword = query
             ? {
-                user: userId,
-                type: query.type || { $exists: true },
-                status: query.status || { $exists: true }
-            }
+                  user: userId,
+                  type: query.type || { $exists: true },
+                  status: query.status || { $exists: true },
+              }
             : { user: userId };
-
 
         const [count, transactions] = await Promise.all([
             this.Transaction.countDocuments({ ...keyword }).exec(),
@@ -72,7 +79,7 @@ export class TransactionService {
                 .sort(query.sort || { _id: 1 })
                 .limit(pageSize)
                 .skip((page - 1) * pageSize)
-                .exec()
+                .exec(),
         ]);
 
         return {
@@ -81,19 +88,18 @@ export class TransactionService {
             transactions,
             page,
             pageSize,
-            pages: Math.ceil(count / pageSize)
+            pages: Math.ceil(count / pageSize),
         };
     };
-
 
     createPaypalPyament = (userId: string, chatId: string) => {
         return new Promise(async (resolve, reject) => {
             const chat = await this.Chat.findOne({
                 _id: chatId,
                 members: {
-                    $in: [userId]
+                    $in: [userId],
                 },
-                isBlocked: false
+                isBlocked: false,
             });
 
             if (!chat)
@@ -114,18 +120,20 @@ export class TransactionService {
             let create_payment_json = {
                 intent: "authorize",
                 payer: {
-                    payment_method: "paypal"
+                    payment_method: "paypal",
                 },
                 redirect_urls: {
                     return_url: `${process.env.APP_URL}`,
-                    cancel_url: `${process.env.APP_URL}`
+                    cancel_url: `${process.env.APP_URL}`,
                 },
-                transactions: [{
-                    amount: {
-                        currency: "USD",
-                        total: `${(orderPrice / usdPrice).toFixed(2)}`
+                transactions: [
+                    {
+                        amount: {
+                            currency: "USD",
+                            total: `${(orderPrice / usdPrice).toFixed(2)}`,
+                        },
                     },
-                }]
+                ],
             };
 
             paypal.payment.create(create_payment_json, (error, payment) => {
@@ -135,12 +143,11 @@ export class TransactionService {
                 }
 
                 const paymentId = payment.id;
-                const approvalUrl = payment.links?.find(data => data.rel === "approval_url");
+                const approvalUrl = payment.links?.find((data) => data.rel === "approval_url");
                 resolve({ paymentId, approvalUrl });
             });
         });
     };
-
 
     withdrawRequest = async (user: UserModel, withdrawData: CreateWithdrawalRequestBody) => {
         const wallet = user.wallet;
@@ -157,12 +164,11 @@ export class TransactionService {
             price: withdrawData.amount,
             withdrawalDetails: {
                 price: withdrawData.amount,
-                account: withdrawData.account
-            }
+                account: withdrawData.account,
+            },
         });
         return createdWithdrawReq;
     };
-
 
     withdrawTransaction = async (transactionId: string) => {
         const transaction = await this.Transaction.findById(transactionId);
@@ -176,23 +182,21 @@ export class TransactionService {
         transaction.status = TransactionStatus.COMPLETED;
         const [newTransaction] = await Promise.all([
             transaction.save(),
-            this.User.findByIdAndUpdate(transaction.user,
-                {
-                    $inc: {
-                        withdrawedWallet: +transaction.price,
-                        wallet: -transaction.price
-                    }
-                }),
-            this.lancerService.reduceAmountFromWallet(transaction.price)
+            this.User.findByIdAndUpdate(transaction.user, {
+                $inc: {
+                    withdrawedWallet: +transaction.price,
+                    wallet: -transaction.price,
+                },
+            }),
+            this.lancerService.reduceAmountFromWallet(transaction.price),
         ]);
 
         return newTransaction;
     };
 
-
     refundTransaction = async (transactionId: string) => {
         const transaction = await this.Transaction.findById(transactionId)
-            .populate('order', 'seller')
+            .populate("order", "seller")
             .exec();
 
         if (!transaction)
@@ -203,8 +207,8 @@ export class TransactionService {
 
             transaction.status = TransactionStatus.COMPLETED;
             transaction.refundDetails = {
-                id: (refundId as string),
-                status: PaypalRefundStatus.COMPLETED
+                id: refundId as string,
+                status: PaypalRefundStatus.COMPLETED,
             };
 
             const orderAmount = transaction.orderPaymentDetails.amount;
@@ -214,27 +218,24 @@ export class TransactionService {
             const [newTransaction] = await Promise.all([
                 transaction.save(),
                 this.userService.deductFromSellerEarnings(
-                    ((transaction.order as OrderModel).seller as string),
+                    (transaction.order as OrderModel).seller as string,
                     dedcuctionAmount
                 ),
-                this.lancerService.reduceAmountFromWallet(orderAmount)
+                this.lancerService.reduceAmountFromWallet(orderAmount),
             ]);
             return newTransaction;
         }
 
-        if (transaction.orderPaymentDetails.platform === PaymentPlatform.STRIP) {
+        if (transaction.orderPaymentDetails.platform === PaymentPlatform.STRIP)
             return true;
-        }
 
         throw new BadRequestException("refund failed");
     };
 
-
     cancelTransaction = async (transactionId: string) => {
         const transaction = await this.Transaction.findById(transactionId).exec();
 
-        if (!transaction)
-            throw new NotFoundException("transaction not found");
+        if (!transaction) throw new NotFoundException("transaction not found");
 
         if (transaction.status === TransactionStatus.REJECTED)
             throw new BadRequestException("transaction is already been cancelled");
@@ -245,39 +246,36 @@ export class TransactionService {
         return cancelTransaction;
     };
 
-
     getReports = async () => {
-        const [wallet, transactionAmount] = await Promise.all([
+        const [lancer, transactionAmount] = await Promise.all([
             this.lancerService.getLancer(),
             this.Transaction.aggregate([
                 {
                     $match: {
-                        status: TransactionStatus.COMPLETED
-                    }
+                        status: TransactionStatus.COMPLETED,
+                    },
                 },
                 {
                     $group: {
                         _id: "$type",
                         total: {
-                            $sum: "$price"
-                        }
-                    }
-                }
-            ])
+                            $sum: "$price",
+                        },
+                    },
+                },
+            ]),
         ]);
 
         return {
-            wallet: wallet?.wallet, 
+            wallet: lancer?.wallet || 0,
             [transactionAmount[0]._id]: transactionAmount[0].total,
-            [transactionAmount[1]._id]: transactionAmount[1].total
-        }
+            [transactionAmount[1]._id]: transactionAmount[1].total,
+        };
     };
-
 
     cutCommission = (amount: number, commission: number) => {
-        return amount - (amount * commission / 100);
+        return amount - (amount * commission) / 100;
     };
-
 
     paypalRefund = (id: string) => {
         return new Promise(async (resolve, reject) => {
@@ -291,7 +289,4 @@ export class TransactionService {
             });
         });
     };
-
 }
-
-

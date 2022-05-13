@@ -1,31 +1,27 @@
-import { Request, Response } from 'express';
-import asyncHandler from 'express-async-handler';
-import { CustomRequest, SearchModel } from '../interface';
-import { CategoryService } from '../services';
+import { Request, Response } from "express";
+import asyncHandler from "express-async-handler";
+import { CustomRequest, SearchModel } from "../interface";
+import { CategoryService } from "../services";
 import {
     AddCategoryBody,
     AddSubCategoryBody,
     EditCategoryBody,
-    EditSubCategoryBody
-} from '../validation';
-
+    EditSubCategoryBody,
+} from "../validation";
 
 export class CategoryController {
-
     public categoryService: CategoryService = new CategoryService();
-
 
     // @desc        Adding new category
     // @rout        POST /category
     // @acce        Admin
     addCategory = asyncHandler(async (req: CustomRequest, res: Response) => {
         const body: AddCategoryBody = req.body;
-        const adminId = req.headers['user']?._id as string;
+        const adminId = req.headers["user"]?._id as string;
 
         const category = await this.categoryService.addCategory(body, adminId);
         res.status(201).json(category);
     });
-
 
     // @desc        For geting all category
     // @rout        GET /category
@@ -34,7 +30,6 @@ export class CategoryController {
         const category = await this.categoryService.getAllCategory();
         res.json(category);
     });
-
 
     // @desc        For geting all category for admin
     // @rout        GET /category/admin
@@ -46,7 +41,6 @@ export class CategoryController {
         res.json(category);
     });
 
-
     // @desc        Adding new sub category
     // @rout        POST /category/subcategory
     // @acce        Admin
@@ -56,7 +50,6 @@ export class CategoryController {
         const category = await this.categoryService.addSubCategory(body);
         res.status(201).json(category);
     });
-
 
     // @desc        Editing new sub category
     // @rout        PUT /category/subcategory/:id
@@ -69,7 +62,6 @@ export class CategoryController {
         res.json(category);
     });
 
-
     // @desc        Getting one sub category
     // @rout        GET /category/subcategory/:id
     // @acce        Admin
@@ -79,7 +71,6 @@ export class CategoryController {
         const category = await this.categoryService.getOneSubCategory(subcategoryId);
         res.json(category);
     });
-
 
     // @desc        For geting category details and curresponding subcategory
     // @rout        GET /category/:id
@@ -91,7 +82,6 @@ export class CategoryController {
         res.json(category[0]);
     });
 
-
     // @desc        For geting category details and curresponding subcategory
     // @rout        GET /category/admin/:id
     // @acce        Admin
@@ -101,7 +91,6 @@ export class CategoryController {
         const category = await this.categoryService.getCategorySubcategoryForAdmin(categoryId);
         res.json(category[0]);
     });
-
 
     // @desc        For blocking the category
     // @rout        PUT /category/:id
@@ -114,7 +103,6 @@ export class CategoryController {
         res.json(updatedCat);
     });
 
-
     // @desc        For blocking the category
     // @rout        PATCH /category/block/:id
     // @acce        Admin
@@ -124,7 +112,6 @@ export class CategoryController {
         await this.categoryService.blockCategory(categoryId);
         res.status(204).json({});
     });
-
 
     // @desc        For unblocking the subcategory
     // @rout        PATCH /category/unblock/:id
@@ -136,7 +123,6 @@ export class CategoryController {
         res.status(204).json({});
     });
 
-
     // @desc        For blocking the subcategory
     // @rout        PATCH /category/subcategory/block/:id
     // @acce        Admin
@@ -146,7 +132,6 @@ export class CategoryController {
         await this.categoryService.blockSubCategory(subcategoryId);
         res.status(204).json({});
     });
-
 
     // @desc        For unblocking the sucategory
     // @rout        PATCH /category/subcategory/unblock/:id

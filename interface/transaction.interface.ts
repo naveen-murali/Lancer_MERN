@@ -1,13 +1,13 @@
-import { PaypalRefundStatus, TransactionStatus, TransactionType } from '../util';
-import { PaginationModel, PaymentDetailsModel } from './common.interface';
-import { OrderModel } from './order.interface';
+import { PaypalRefundStatus, TransactionStatus, TransactionType } from "../util";
+import { PaginationModel, PaymentDetailsModel } from "./common.interface";
+import { OrderModel } from "./order.interface";
 
 export interface RefundDetailsModel {
-    id: string,
+    id: string;
     status: PaypalRefundStatus;
 }
 export interface WithdrawalDetailsModel {
-    price: string,
+    price: string;
     account: string;
 }
 
@@ -19,7 +19,7 @@ export interface TransactionModel {
     status: TransactionStatus;
     withdrawalDetails: WithdrawalDetailsModel;
     order: string | OrderModel;
-    orderPaymentDetails: PaymentDetailsModel,
+    orderPaymentDetails: PaymentDetailsModel;
     refundDetails: RefundDetailsModel;
 }
 

@@ -1,9 +1,9 @@
 {
   "name": "lancer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A freelancers platform",
   "main": "server.js",
-  "repository": "https://github.com/naveen-murali/Lancer_MERN.git",
+  "repository": "https://github.com/naveen-murali/Lancer.git",
   "author": "Naveen Murali <naveenmurali1211@gmail.com>",
   "license": "MIT",
   "private": true,
@@ -12,9 +12,15 @@
     "start:dev": "cross-env NODE_ENV=development node build/server.js",
     "build": "tsc && tsc-alias",
     "build:start": "yarn build && yarn start",
-    "dev": "cross-env NODE_ENV=development ts-node-dev server.ts"
+    "dev": "cross-env NODE_ENV=development ts-node-dev server.ts",
+    
+    "dev:docker": "docker-compose -f docker-compose.yml -f docker-compose-dev.yml up",
+    "dev:docker:down": "docker-compose -f docker-compose.yml -f docker-compose-dev.yml down",
+    "dev:docker:build": "yarn dev:docker --build",
+    "start:docker": "docker-compose up -d"
   },
   "dependencies": {
+    "@socket.io/redis-adapter": "^7.2.0",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.28.1",
     "colors": "^1.4.0",
@@ -35,9 +41,9 @@
     "nanoid": "^3.3.1",
     "nodemailer": "^6.7.3",
     "paypal-rest-sdk": "^1.8.1",
-    "redis": "^4.0.6",
+    "redis": "^4.1.0",
     "scrape-it": "^5.3.2",
-    "socket.io": "^4.4.1",
+    "socket.io": "^4.5.0",
     "twilio": "^3.75.1",
     "zod": "^3.14.2"
   },

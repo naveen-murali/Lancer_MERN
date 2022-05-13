@@ -1,15 +1,17 @@
-import { Router } from 'express';
-import { OrderController } from '../controllers';
+import { Router } from "express";
+import { Role } from "../util";
 import { Routes } from "../interface";
-import { checkRoles, protect } from '../middleware';
-import { Role } from '../util';
+import { OrderController } from "../controllers";
+import { checkRoles, protect } from "../middleware";
 
 export class OrderRoutes implements Routes {
     public path: string = "/orders";
     public router: Router = Router();
     private orderController: OrderController = new OrderController();
 
-    constructor() { this.initializeRoutes(); }
+    constructor() {
+        this.initializeRoutes();
+    }
 
     initializeRoutes(): void {
         const orders = this.path;
@@ -22,21 +24,21 @@ export class OrderRoutes implements Routes {
             completeOrder,
             getAllOrdersForAdmin,
             getWeeklyOrders,
-            getMonthlyOrders
+            getMonthlyOrders,
         } = this.orderController;
 
         this.router
             .route(`${orders}`)
             .get(protect, checkRoles([Role.BUYER, Role.SELLER]), getOneUserOrders);
-       
+
         this.router
             .route(`${orders}/admin`)
             .get(protect, checkRoles([Role.ADMIN]), getAllOrdersForAdmin);
-        
+
         this.router
             .route(`${orders}/weekly`)
             .get(protect, checkRoles([Role.ADMIN]), getWeeklyOrders);
-        
+
         this.router
             .route(`${orders}/monthly`)
             .get(protect, checkRoles([Role.ADMIN]), getMonthlyOrders);
@@ -53,9 +55,6 @@ export class OrderRoutes implements Routes {
             .route(`${orders}/:id/cancel`)
             .patch(protect, checkRoles([Role.BUYER]), cancelOrder);
 
-        this.router
-            .route(`${orders}/:id`)
-            .get(protect, checkRoles([Role.BUYER]), getOneOrder);
+        this.router.route(`${orders}/:id`).get(protect, checkRoles([Role.BUYER]), getOneOrder);
     }
-
 }

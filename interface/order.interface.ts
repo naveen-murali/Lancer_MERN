@@ -1,5 +1,5 @@
-import { CompletionLevel, OrderSearchType, OrderStatus } from '../util';
-import { CommonOrderModel, PaginationModel, PaymentDetailsModel } from './common.interface';
+import { CompletionLevel, OrderSearchType, OrderStatus } from "../util";
+import { CommonOrderModel, PaginationModel, PaymentDetailsModel } from "./common.interface";
 
 interface CompletionLevelModel {
     seller: CompletionLevel;
@@ -20,7 +20,6 @@ export interface OrderModel extends CommonOrderModel {
     createdAt: Date;
     updatedAt: Date;
 }
-
 
 export interface OrderSearchModel extends PaginationModel {
     type: OrderSearchType;

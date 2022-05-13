@@ -1,24 +1,22 @@
-import { Request, Response } from 'express';
-import asyncHandler from 'express-async-handler';
-import jwt from 'jsonwebtoken';
-import { HttpException } from '../exceptions';
-import { CustomRequest, UserModel } from '../interface';
+import { Request, Response } from "express";
+import asyncHandler from "express-async-handler";
+import jwt from "jsonwebtoken";
+import { HttpException } from "../exceptions";
+import { CustomRequest, UserModel } from "../interface";
 
-import { AuthService } from '../services';
-import { AuthResponse, Role } from '../util';
+import { AuthService } from "../services";
+import { AuthResponse, Role } from "../util";
 import {
     SignupBody,
     SendOtpBody,
     SigninBody,
     SigninGoogleBody,
     SignupGooogleBody,
-    PhoneVarificationBody
-} from '../validation';
-
+    PhoneVarificationBody,
+} from "../validation";
 
 export class AuthController {
     public authService: AuthService = new AuthService();
-
 
     // @desc       Signup for the users
     // @rout       POST /auth/user/signup
@@ -26,13 +24,10 @@ export class AuthController {
         const user: SignupBody = req.body;
         const createdUser = await this.authService.createUser(user);
 
-        res.status(201)
-            .json(new AuthResponse(
-                createdUser,
-                this.generateToken(createdUser._id, createdUser.role)
-            ));
+        res.status(201).json(
+            new AuthResponse(createdUser, this.generateToken(createdUser._id, createdUser.role))
+        );
     });
-
 
     // @desc       Signup with google for the users
     // @rout       POST /auth/user/signup/google
@@ -40,13 +35,10 @@ export class AuthController {
         const body: SignupGooogleBody = req.body;
         const createdUser = await this.authService.createUsingGoogle(body.tokenId);
 
-        res.status(201)
-            .json(new AuthResponse(
-                createdUser,
-                this.generateToken(createdUser._id, createdUser.role)
-            ));
+        res.status(201).json(
+            new AuthResponse(createdUser, this.generateToken(createdUser._id, createdUser.role))
+        );
     });
-
 
     // @desc       Signin for the user
     // @rout       POST /auth/users/signin
@@ -54,26 +46,18 @@ export class AuthController {
         const body: SigninBody = req.body;
         const user = await this.authService.signinUser(body.email, body.password);
 
-        res.json(new AuthResponse(
-            user,
-            this.generateToken(user._id, user.role)
-        ));
+        res.json(new AuthResponse(user, this.generateToken(user._id, user.role)));
     });
-
 
     // @desc       Signin with google for the user
     // @rout       POST /auth/users/signin/google
     signinUsingGoogle = asyncHandler(async (req: Request, res: Response) => {
         const body: SigninGoogleBody = req.body;
 
-        const user = await this.authService.signinUsingGoogle(body.googleId);
+        const user = await this.authService.signinUsingGoogle(body.tokenId);
 
-        res.json(new AuthResponse(
-            user,
-            this.generateToken(user._id, user.role)
-        ));
+        res.json(new AuthResponse(user, this.generateToken(user._id, user.role)));
     });
-
 
     // @desc        Sign in for the admin
     // @rout        POST /auth/admin/signin
@@ -85,16 +69,15 @@ export class AuthController {
             name: admin.name,
             email: admin.email,
             role: admin.role,
-            token: this.generateToken(admin._id, admin.role)
+            token: this.generateToken(admin._id, admin.role),
         });
     });
-
 
     // @desc       Varify the users phone number
     // @rout       PATCH /auth/users/:id/phone
     varifyPhone = asyncHandler(async (req: CustomRequest, res: Response) => {
         const id = req.params.id as unknown as string;
-        const user = <UserModel>req.headers['user'];
+        const user = <UserModel>req.headers["user"];
 
         if (user && user._id && user._id.toString() !== id)
             throw new HttpException(401, "Invalied credential");
@@ -105,12 +88,11 @@ export class AuthController {
         res.status(201).json({ phone: body.phone, status: "varified" });
     });
 
-
     // @desc       Link google account
     // @rout       PATCH /auth/users/:id/google
     linkGoogle = asyncHandler(async (req: CustomRequest, res: Response) => {
         const id = req.params.id as unknown as string;
-        const user = <UserModel>req.headers['user'];
+        const user = <UserModel>req.headers["user"];
         const body = <SignupGooogleBody>req.body;
 
         if (user && user._id && user._id.toString() !== id)
@@ -121,7 +103,6 @@ export class AuthController {
         res.status(201).json({ email, status: "varified" });
     });
 
-
     // @desc       OTP requiest for the user
     // @rout       POST /auth/otp
     sendOtp = asyncHandler(async (req: Request, res: Response) => {
@@ -131,11 +112,10 @@ export class AuthController {
         res.status(201).json({ phone });
     });
 
-
     // @desc       General method form token generation.
     generateToken = (id: string, role: Role[]) => {
         return jwt.sign({ id, role }, `${process.env.JWT_SECRET}`, {
-            expiresIn: '10d',
+            expiresIn: "10d",
         });
     };
 }

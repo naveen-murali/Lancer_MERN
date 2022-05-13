@@ -1,4 +1,3 @@
-
 const fromDate = (date: Date) => {
     date.setUTCHours(0);
     date.setUTCMinutes(0);
@@ -19,18 +18,19 @@ const toDate = (date: Date) => {
 export const getWeek = () => {
     const date = new Date();
     const sunday = new Date(date.setDate(date.getDate() - date.getDay()));
-    const result = [{
-        from: fromDate(new Date(sunday)),
-        to: toDate(new Date(sunday))
-    }];
+    const result = [
+        {
+            from: fromDate(new Date(sunday)),
+            to: toDate(new Date(sunday)),
+        },
+    ];
 
     const week = [...new Array(6)].map(() => {
         const newDate = sunday.setDate(sunday.getDate() + 1);
-        return ({
+        return {
             from: fromDate(new Date(newDate)),
-            to: toDate(new Date(newDate))
-        });
-        ;
+            to: toDate(new Date(newDate)),
+        };
     });
 
     return [...result, ...week];
@@ -43,11 +43,10 @@ export const getYear = () => {
         newDate.setMonth(index);
         newDate.setDate(1);
 
-        return ({
+        return {
             from: fromDate(new Date(newDate)),
-            to: toDate(new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0))
-        });
-        ;
+            to: toDate(new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0)),
+        };
     });
 
     return year;

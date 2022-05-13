@@ -1,13 +1,11 @@
-import { Request, Response } from 'express';
-import asyncHandler from 'express-async-handler';
-import { OrderSearchModel } from '../interface';
-import { LancerService } from '../services';
-import { UpdateLancerBody } from '../validation';
+import { Request, Response } from "express";
+import asyncHandler from "express-async-handler";
+import { OrderSearchModel } from "../interface";
+import { LancerService } from "../services";
+import { UpdateLancerBody } from "../validation";
 
 export class LancerController {
-
     public lancerService = new LancerService();
-
 
     // @desc        Get Lancer account details
     // @rout        GET /lancer
@@ -16,7 +14,6 @@ export class LancerController {
         const lancer = await this.lancerService.getLancer();
         res.json(lancer);
     });
-
 
     // @desc        Update Lancer account details
     // @rout        PUT /lancer
@@ -28,7 +25,6 @@ export class LancerController {
         res.status(201).json({});
     });
 
-
     // @desc        Get Lancer account details
     // @rout        GET /lancer/count
     // @acce        Admin
@@ -36,7 +32,6 @@ export class LancerController {
         const counts = await this.lancerService.getLancersCounts();
         res.json(counts);
     });
-
 
     // @desc        Get One User Details for Admin
     // @rout        GET /lancer/users/:id
@@ -48,13 +43,12 @@ export class LancerController {
         res.json(user);
     });
 
-
     // @desc        Get One User Orders for Admin
     // @rout        GET /lancer/users/:id/orders
     // @acce        Admin
     getOneUserOrders = asyncHandler(async (req: Request, res: Response) => {
         const userId = req.params.id as string;
-        const query = <OrderSearchModel><unknown>req.query;
+        const query = <OrderSearchModel>(<unknown>req.query);
 
         const orders = await this.lancerService.getOneUserOrders(userId, query);
         res.json(orders);

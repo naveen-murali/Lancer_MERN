@@ -1,37 +1,36 @@
-import { Schema, model, Document } from 'mongoose';
-import { TransactionModel } from '../interface';
-import { Coll, TransactionStatus } from '../util';
-import { PaymentDetailsModel } from './common.schema';
-
+import { Schema, model, Document } from "mongoose";
+import { TransactionModel } from "../interface";
+import { Coll, TransactionStatus } from "../util";
+import { PaymentDetailsModel } from "./common.schema";
 
 const RefundDetailsModel = new Schema(
     {
         id: {
             type: String,
-            required: true
+            required: true,
         },
         status: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 const WithdrawalDetailsModel = new Schema(
     {
         price: {
             type: Number,
-            required: true
+            required: true,
         },
         account: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 export const TransactionsSchema = new Schema(
@@ -39,46 +38,46 @@ export const TransactionsSchema = new Schema(
         admin: {
             type: Schema.Types.ObjectId,
             required: false,
-            ref: "Admin"
+            ref: "Admin",
         },
         user: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
         },
         type: {
             type: String,
-            required: true
+            required: true,
         },
         price: {
             type: Number,
-            required: true
+            required: true,
         },
         status: {
             type: String,
             required: true,
-            default: TransactionStatus.PENDING
+            default: TransactionStatus.PENDING,
         },
         withdrawalDetails: {
             type: WithdrawalDetailsModel,
-            required: false
+            required: false,
         },
         order: {
             type: Schema.Types.ObjectId,
             required: false,
-            ref: "Order"
+            ref: "Order",
         },
         orderPaymentDetails: {
             type: PaymentDetailsModel,
-            required: false
+            required: false,
         },
         refundDetails: {
             type: RefundDetailsModel,
-            required: false
-        }
+            required: false,
+        },
     },
     {
-        timestamps: true
+        timestamps: true,
     }
 );
 

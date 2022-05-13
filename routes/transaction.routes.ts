@@ -1,16 +1,18 @@
-import { Router } from 'express';
+import { Router } from "express";
+import { Role } from "../util";
 import { Routes } from "../interface";
-import { Role } from '../util';
-import { TransactionController } from '../controllers';
-import { CreatePaypalPaymentBodyVal, CreateWithdrawalRequestBodyVal } from '../validation';
-import { checkRoles, protect, ValidateBody } from '../middleware';
+import { TransactionController } from "../controllers";
+import { checkRoles, protect, ValidateBody } from "../middleware";
+import { CreatePaypalPaymentBodyVal, CreateWithdrawalRequestBodyVal } from "../validation";
 
 export class TransactionRoutes implements Routes {
     public path: string = "/transactions";
     public router: Router = Router();
     private transactionController: TransactionController = new TransactionController();
 
-    constructor() { this.initializeRoutes(); }
+    constructor() {
+        this.initializeRoutes();
+    }
 
     initializeRoutes(): void {
         const transactions = this.path;
@@ -23,7 +25,7 @@ export class TransactionRoutes implements Routes {
             cancelTransaction,
             withdrawTransaction,
             withdrawRequest,
-            getReports
+            getReports,
         } = this.transactionController;
 
         this.router
@@ -33,18 +35,28 @@ export class TransactionRoutes implements Routes {
         this.router
             .route(`${transactions}/admin`)
             .get(protect, checkRoles([Role.ADMIN]), getAllTransactions);
-       
+
         this.router
             .route(`${transactions}/report`)
             .get(protect, checkRoles([Role.ADMIN]), getReports);
 
         this.router
             .route(`${transactions}/payment/paypal`)
-            .post(protect, checkRoles([Role.BUYER]), ValidateBody(CreatePaypalPaymentBodyVal.safeParse), createPaypalPyament);
+            .post(
+                protect,
+                checkRoles([Role.BUYER]),
+                ValidateBody(CreatePaypalPaymentBodyVal.safeParse),
+                createPaypalPyament
+            );
 
         this.router
             .route(`${transactions}/withdraw`)
-            .post(protect, checkRoles([Role.BUYER]), ValidateBody(CreateWithdrawalRequestBodyVal.safeParse), withdrawRequest);
+            .post(
+                protect,
+                checkRoles([Role.BUYER]),
+                ValidateBody(CreateWithdrawalRequestBodyVal.safeParse),
+                withdrawRequest
+            );
 
         this.router
             .route(`${transactions}/:id/withdraw`)

@@ -1,5 +1,5 @@
-import { CommonOrderModel, UserType } from './common.interface';
-import { PackagesDetails } from './service.interface';
+import { CommonOrderModel, UserType } from "./common.interface";
+import { PackagesDetails } from "./service.interface";
 
 export interface ChatModel {
     _id: string;
@@ -12,6 +12,7 @@ export interface ChatModel {
     negotiatedRevision: number;
     negotiatedDeliveryTime: number;
     isBlocked: boolean;
+    lastMessage: object;
     createdAt: Date;
     updatedAt: Date;
 }

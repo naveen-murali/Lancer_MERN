@@ -1,20 +1,20 @@
 export enum OrderStatus {
     ONGOING = "ongoing",
     COMPLETED = "completed",
-    CANCELLED = "cancelled"
+    CANCELLED = "cancelled",
 }
 
 export enum PaymentPlatform {
     PAYPAL = "paypal",
-    STRIP = "strip"
+    STRIP = "strip",
 }
 
 export enum CompletionLevel {
     COMPLETED = "completed",
-    ONGOING = "ongoing"
+    ONGOING = "ongoing",
 }
 
-export enum OrderSearchType{
+export enum OrderSearchType {
     BUYING = "buying",
-    SELLING = "selling"
+    SELLING = "selling",
 }

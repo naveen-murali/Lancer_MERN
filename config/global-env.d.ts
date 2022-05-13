@@ -1,6 +1,6 @@
 namespace NodeJS {
     interface ProcessEnv {
-        NODE_ENV: 'development' | 'production';
+        NODE_ENV: "development" | "production";
         PORT: string;
         APP_URL: string;
         BODY_LIMIT: string;
@@ -18,6 +18,7 @@ namespace NodeJS {
         FIREBASE_CLIENT_EMAIL: string;
         FIREBASE_PRIVATE_KEY: string;
 
+        PAYAL_MODE: string;
         PAYPAL_CLIENT: string;
         PAYPAL_SECRET: string;
 

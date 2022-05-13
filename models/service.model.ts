@@ -1,26 +1,25 @@
-import { Schema, model, Document } from 'mongoose';
-import { ServiceModel } from '../interface';
-import { ServiceImage } from './common.schema';
-import { Coll } from '../util';
-
+import { Schema, model, Document } from "mongoose";
+import { ServiceModel } from "../interface";
+import { ServiceImage } from "./common.schema";
+import { Coll } from "../util";
 
 export const packageDetailsSchema: Schema = new Schema(
     {
         price: {
             type: Number,
-            required: true
+            required: true,
         },
         deliveryTime: {
             type: Number,
-            required: true
+            required: true,
         },
         revision: {
             type: Number,
-            required: true
-        }
+            required: true,
+        },
     },
     {
-        _id: false
+        _id: false,
     }
 );
 
@@ -40,39 +39,38 @@ const packagesSchema: Schema = new Schema(
         },
     },
     {
-        _id: false
+        _id: false,
     }
 );
-
 
 const serviceSchema: Schema = new Schema(
     {
         user: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User"
+            ref: "User",
         },
         title: {
             type: String,
-            required: true
+            required: true,
         },
         description: {
             type: String,
-            required: true
+            required: true,
         },
         category: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "Category"
+            ref: "Category",
         },
         subcategory: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "Subcategory"
+            ref: "Subcategory",
         },
         images: {
             type: [ServiceImage],
-            required: true
+            required: true,
         },
         packages: {
             type: packagesSchema,
@@ -81,27 +79,27 @@ const serviceSchema: Schema = new Schema(
         rating: {
             type: Number,
             required: true,
-            default: 0
+            default: 0,
         },
         totalReview: {
             type: Number,
             required: true,
-            default: 0
+            default: 0,
         },
         isActive: {
             type: Boolean,
             required: true,
-            default: true
+            default: true,
         },
         isBlocked: {
             type: Boolean,
             required: true,
-            default: false
+            default: false,
         },
         isDeleted: {
             type: Boolean,
             required: true,
-            default: false
+            default: false,
         },
     },
     {
@@ -109,4 +107,4 @@ const serviceSchema: Schema = new Schema(
     }
 );
 
-export const Service = model<ServiceModel & Document>('Service', serviceSchema, Coll.SERVICES);
+export const Service = model<ServiceModel & Document>("Service", serviceSchema, Coll.SERVICES);
