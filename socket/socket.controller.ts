@@ -1,11 +1,11 @@
 import { Types } from "mongoose";
-import { IO } from "./socket.type";
+import { AuthorizationResource, RelatedResources, Amount } from "paypal-rest-sdk";
+import { IO } from "./schema/socket.type";
 import { Events } from "./socket.enum";
 import { paypal, redis } from "../config";
-import { CustomSocket } from "./socket.interface";
+import { CustomSocket } from "./schema/socket.interface";
 import { BadRequestException, HttpException } from "../exceptions";
 import { AcceptStatus, MessageTypes, PaymentPlatform, Role } from "../util";
-import { AuthorizationResource, RelatedResources, Amount } from "paypal-rest-sdk";
 import { User, Chat, Order, Lancer, Service, Message, SellerInfo } from "../models";
 import {
     OfferBody,
@@ -234,7 +234,7 @@ export const cancelOffer = async (io: IO, socket: CustomSocket, data: OfferBody)
     }
 };
 
-export const offerAcceptBySeller = async (io: IO, socket: CustomSocket, data: OfferBody) => {
+export const offerAccept = async (io: IO, socket: CustomSocket, data: OfferBody) => {
     console.log(`[event] - ${Events.MESSAGE}/accept`.bgMagenta);
     const userId = socket.user as string;
     const userRole = socket.userRole as Role[];
@@ -465,7 +465,7 @@ export const placeOrder = async (io: IO, socket: CustomSocket, orderData: PlaceO
     }
 };
 
-export const addWatchPipeline = (socket: CustomSocket) => {
+export const addWatchPipelineForAdmin = (socket: CustomSocket) => {
     Lancer.watch([], { fullDocument: "updateLookup" })
         .on("change", (data) => {
             socket.emit(Events.LANCER, data.fullDocument);
@@ -514,4 +514,20 @@ export const addWatchPipeline = (socket: CustomSocket) => {
             console.log(err);
         }
     });
+};
+
+export const addWatchPipelineForUser = (io:IO, socket: CustomSocket) => {
+    Message.watch([{
+        $match: { operationType: "insert" },
+    }]).on("change", async (data) => {
+        const doc = data.fullDocument;
+        try {
+            const senderId = await redis.get(doc._id.toString());
+            
+            if (senderId)
+                io.to(senderId).emit(`${Events.MESSAGE}/${doc.chat}`, doc);
+        } catch (err) {
+            console.log(err)
+        }
+    })
 };

@@ -1,2 +1,2 @@
 export * from "./socket.route";
-export * from "./socket.type";
+export * from "./schema/socket.type";

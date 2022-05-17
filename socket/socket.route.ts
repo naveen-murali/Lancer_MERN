@@ -1,26 +1,25 @@
 import { Server } from "socket.io";
-import { Server as HttpServer } from "http";
-import { createAdapter } from "@socket.io/redis-adapter";
 import { Events } from "./socket.enum";
-import { redis, subClient } from "../config";
-import { SetupSocketIo } from "./socket.type";
+import { Server as HttpServer } from "http";
+import { SetupSocketIo } from "./schema/socket.type";
 import { protectSocket } from "./socket.middleware";
 import {
     CustomSocket,
     InterServerEvents,
     ClientToServerEvents,
     ServerToClientEvents,
-} from "./socket.interface";
+} from "./schema/socket.interface";
 import {
     addUser,
     removeUser,
     cancelOffer,
     sendMessage,
-    offerAcceptBySeller,
+    offerAccept,
     getStatusOfUser,
     placeOrder,
-    addWatchPipeline,
-} from "./socket.controller";
+    addWatchPipelineForAdmin,
+    addWatchPipelineForUser,
+} from "./handlers";
 import { Role } from "../util";
 
 export const setupSocketIo: SetupSocketIo = (server: HttpServer) => {
@@ -35,14 +34,15 @@ export const setupSocketIo: SetupSocketIo = (server: HttpServer) => {
         }
     );
 
-    io.adapter(createAdapter(redis, subClient));
     io.use(protectSocket);
 
     io.on(Events.CONNECTION, async (socket: CustomSocket) => {
         if ((socket.userRole as Role[])[0] === Role.ADMIN) {
-            addWatchPipeline(socket);
+            addWatchPipelineForAdmin(socket);
         } else {
             addUser(io, socket.user as string, socket.id);
+
+            addWatchPipelineForUser(io, socket)
 
             socket.on(Events.MESSAGE, (message) => sendMessage(io, socket, message));
 
@@ -50,7 +50,7 @@ export const setupSocketIo: SetupSocketIo = (server: HttpServer) => {
 
             socket.on(`${Events.MESSAGE}/cancel`, (data) => cancelOffer(io, socket, data));
 
-            socket.on(`${Events.MESSAGE}/accept`, (data) => offerAcceptBySeller(io, socket, data));
+            socket.on(`${Events.MESSAGE}/accept`, (data) => offerAccept(io, socket, data));
 
             socket.on(`${Events.ORDER}`, (data) => placeOrder(io, socket, data));
 

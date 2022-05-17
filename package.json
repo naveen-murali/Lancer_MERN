@@ -13,14 +13,12 @@
     "build": "tsc && tsc-alias",
     "build:start": "yarn build && yarn start",
     "dev": "cross-env NODE_ENV=development ts-node-dev server.ts",
-    
     "dev:docker": "docker-compose -f docker-compose.yml -f docker-compose-dev.yml up",
     "dev:docker:down": "docker-compose -f docker-compose.yml -f docker-compose-dev.yml down",
     "dev:docker:build": "yarn dev:docker --build",
     "start:docker": "docker-compose up -d"
   },
   "dependencies": {
-    "@socket.io/redis-adapter": "^7.2.0",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.28.1",
     "colors": "^1.4.0",

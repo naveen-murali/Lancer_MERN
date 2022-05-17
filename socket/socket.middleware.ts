@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { ExtendedError } from "socket.io/dist/namespace";
 import { Role } from "../util";
 import { User } from "../models";
-import { CustomSocket } from "./socket.interface";
+import { CustomSocket } from "./schema/socket.interface";
 import { DecodedData, UserModel } from "../interface";
 
 export const protectSocket = async (socket: CustomSocket, next: (err?: ExtendedError) => void) => {
@@ -37,6 +37,7 @@ export const protectSocket = async (socket: CustomSocket, next: (err?: ExtendedE
         }
     }
 
-    if (!token)
+    if (!token) {
         next(new Error("Not authorized, no token"));
+    }
 };
